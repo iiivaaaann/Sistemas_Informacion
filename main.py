@@ -83,14 +83,30 @@ print("Desviación estándar = " + str(df.std()))
 
 #1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).
 #df=pd.read_sql_query("SELECT COUNT(*) as num, origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
-df=pd.read_sql_query("SELECT origen FROM ALERTS WHERE priority = 1",conexion)
-print(df['origen'])
-x_values=df['origen'].unique()
-y_values=df['origen'].value_counts().tolist()
+df=pd.read_sql_query("SELECT COUNT(*) as num, origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
+muestra=df[:10].copy()
+x_values=muestra['origen']
+y_values=muestra['num']
+"""print(df['origen'])
+x_values=df['origen'].unique().
+y_values=df['origen'].value_counts().tolist()"""
+plt.figure(num=None, figsize=(14, 6), dpi=80, facecolor='w', edgecolor='k')
 plt.bar(x_values,y_values)
 plt.show()
 plt.close("all")
 #2. Número de alertas en el tiempo, representadas en una serie temporal.
+df=pd.read_sql_query("SELECT time FROM ALERTS ",conexion)
+df.index=df['time']
+print(df)
 #3. Número de alertas por categoríaa, representadas en un gráfico de barras.
+df=pd.read_sql_query("SELECT COUNT(*) as num, clasification FROM ALERTS GROUP BY clasification ORDER BY num desc ",conexion)
+print(df)
+plt.figure(num=None, figsize=(18, 10), dpi=80, facecolor='w', edgecolor='k')
+x_values=['GPCD','MA','PBT','NST','PCPV','AIL','AAPG','DNS','WAA','NT','APVWA','AUPG','IL','ma']
+#df['clasification']
+y_values=df['num']
+plt.bar(x_values,y_values)
+plt.show()
+plt.close("all")
 #4. Dispositivos más vulnerables (Suma de servicios vulnerables y vulnerabilidades detectadas).
 #5. Media de puertos abiertos frente a servicios inseguros y frente al total de servicios detectados.

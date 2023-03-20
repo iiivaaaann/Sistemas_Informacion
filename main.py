@@ -48,3 +48,29 @@ with open("devices.json") as f:
 
 conexion.commit()
 
+#Ejer 2
+
+#1. Número de dispositivos
+#Basando en IPs diferentes
+df=pd.read_sql_query("SELECT DISTINCT origen FROM ALERTS UNION SELECT DISTINCT destino FROM ALERTS ",conexion)
+print("Número de dispotivos = " + str(df.size) + " dispostivos")
+
+#2. Número de alertas
+
+df=pd.read_sql_query("SELECT sid FROM ALERTS ",conexion)
+print("Número de alertas = " + str(df.size) + " alertas")
+
+#3. Media y desviación estándar del totla de puertos abiertos
+df=pd.read_sql_query("SELECT puerto FROM ALERTS ",conexion)
+
+print("Media = " + str(df.mean()) )
+print("Desviación estándar = " + str(df.std()))
+
+#4. Media y desviación est´andar del número de servicios inseguros detectados
+
+#5. Media y desviación estándar del número de vulnerabilidades detectadas.
+
+#6. Valor mínimo y valor máximo del total de puertos abiertos.
+
+
+#7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.

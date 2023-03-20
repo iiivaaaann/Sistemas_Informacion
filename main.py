@@ -1,6 +1,7 @@
 import pandas as pd
 import sqlite3
 import json
+import matplotlib.pyplot as plt
 conexion= sqlite3.connect('pr1_SI.db')
 cur=conexion.cursor()
 #cur.execute("DROP TABLE ALERTS")
@@ -74,3 +75,22 @@ print("Desviación estándar = " + str(df.std()))
 
 
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
+
+
+
+
+#Ejer 4
+
+#1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).
+#df=pd.read_sql_query("SELECT COUNT(*) as num, origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
+df=pd.read_sql_query("SELECT origen FROM ALERTS WHERE priority = 1",conexion)
+print(df['origen'])
+x_values=df['origen'].unique()
+y_values=df['origen'].value_counts().tolist()
+plt.bar(x_values,y_values)
+plt.show()
+plt.close("all")
+#2. Número de alertas en el tiempo, representadas en una serie temporal.
+#3. Número de alertas por categoríaa, representadas en un gráfico de barras.
+#4. Dispositivos más vulnerables (Suma de servicios vulnerables y vulnerabilidades detectadas).
+#5. Media de puertos abiertos frente a servicios inseguros y frente al total de servicios detectados.

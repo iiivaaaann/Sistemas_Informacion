@@ -104,7 +104,7 @@ print("Número de alertas = " + str(df.size) + " alertas")
 df=pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
 print("El número medio de puertos abiertos en los dispositivos es: "+str(df["P_ABIERTOS"].mean())+" puertos.")
 print("La desviación estándar de puertos abiertos es : "+ str(round(df["P_ABIERTOS"].std(),2)))
-exit(0)
+
 #4. Media y desviación est´andar del número de servicios inseguros detectados
 
 #5. Media y desviación estándar del número de vulnerabilidades detectadas.
@@ -112,10 +112,12 @@ exit(0)
 #6. Valor mínimo y valor máximo del total de puertos abiertos. (Consulta un poco compleja por la estructura de la T puertos)
 #SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)
 df=pd.read_sql_query("SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
-print("Como máximo hay "+ str(df["MAX(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]))
+print("Como máximo hay "+ str(df["MAX(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0])
+      +" y al dispositivo: "+ str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?)",conexion, params=[str(df["ANALISIS_ID"][0])])["id"][0]))
 df=pd.read_sql_query("SELECT MIN(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
 print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]) +
-      str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?",conexion, params=(df["ANALISIS_ID"][0]))))#{"id_anali":df["ANALISIS_ID"][0]})[0]))
+    " y al dispositivo: "+ str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?)",conexion, params=[str(df["ANALISIS_ID"][0])])["id"][0]))
+
 # Linkar con device.
 exit(0)
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.

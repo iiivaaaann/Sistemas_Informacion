@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 conexion= sqlite3.connect('pr1_SI.db')
 cur=conexion.cursor()
 
+#def model_creation()
+
 cur.execute("CREATE TABLE if not exists RESPONSABLE (nombre text PRIMARY KEY, telefono int, rol text)")
 cur.execute("CREATE TABLE if not exists DEVICES (id text primary key , ip text, responsable_nombre text, localizacion text, FOREIGN KEY (responsable_nombre) references responsable(nombre))")
 cur.execute("CREATE TABLE if not exists ANALISIS (ID INTEGER PRIMARY KEY autoincrement, devices_id text UNIQUE, servicios int, servicios_ins int, detect_vulns int, FOREIGN KEY (devices_id) references DEVICES(id))")
@@ -63,9 +65,32 @@ conexion.commit()
 #Basando en IPs diferentes
 df=pd.read_sql_query("SELECT DISTINCT origen FROM ALERTS UNION SELECT DISTINCT destino FROM ALERTS ",conexion)
 print("Número de dispotivos = " + str(df.size) + " dispostivos")
+df=pd.read_sql_query("SELECT COUNT(*) NDEV FROM DEVICES", conexion)
+print("Tenemos " + str(df["NDEV"][0]) + " dispositivos conocidos")
 # como nos piden los none y los missing:
-# select count(*) from alerts where msg like '%issing%'
-#
+
+df=pd.read_sql_query("select count(*) as MISSING_MSGS from ALERTS where msg like '%issing%'", conexion)
+print("Tenemos "+str(df["MISSING_MSGS"][0]) + " alertas con valores MISSING en sus mensajes")
+
+df1=pd.read_sql_query("SELECT * FROM DEVICES", conexion)
+df2=pd.read_sql_query("SELECT * FROM ANALISIS",conexion)
+df3=pd.read_sql_query("SELECT * FROM PUERTOS",conexion)
+df4=pd.read_sql_query("SELECT * FROM RESPONSABLE", conexion)
+
+print("Mostrando \"NONES\" del esquema generado desde devices.json:")
+print("TABLA DEVICES:")
+print(df1.isnull().sum(), end='\n\n')
+print("TABLA ANALISIS:")
+print(df2.isnull().sum(), end='\n\n')
+print("TABLA PUERTOS:")
+print(df3.isnull().sum(), end='\n\n')
+print("TABLA RESPONSABLES:")
+print(df4.isnull().sum(), end='\n\n')
+
+
+exit(0)
+
+
 #2. Número de alertas
 
 df=pd.read_sql_query("SELECT sid FROM ALERTS ",conexion)
@@ -90,6 +115,8 @@ print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abier
 # Linkar con device.
 exit(0)
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
+
+#Ejer 3
 
 
 

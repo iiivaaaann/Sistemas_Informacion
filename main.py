@@ -51,9 +51,10 @@ with open("devices.json") as f:
                 #print("nombre: " + name + " id analisis: " + str(analisis_id))
                 cur.execute("INSERT OR IGNORE INTO PUERTOS (NOMBRE, ANALISIS_ID) VALUES (?,?)",(name,analisis_id))
     print(".... puertos insertados correctamente!")
+
 conexion.commit()
 
-exit(0)
+
 #Ejer 2
 
 #1. Número de dispositivos

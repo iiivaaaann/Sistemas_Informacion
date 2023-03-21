@@ -88,7 +88,7 @@ print("TABLA RESPONSABLES:")
 print(df4.isnull().sum(), end='\n\n')
 
 
-exit(0)
+
 
 
 #2. Número de alertas
@@ -97,11 +97,14 @@ df=pd.read_sql_query("SELECT sid FROM ALERTS ",conexion)
 print("Número de alertas = " + str(df.size) + " alertas")
 
 #3. Media y desviación estándar del totla de puertos abiertos
-df=pd.read_sql_query("SELECT puerto FROM ALERTS ",conexion)
+#df=pd.read_sql_query("SELECT puerto FROM ALERTS ",conexion)
 
-print("Media = " + str(df.mean()) )
-print("Desviación estándar = " + str(df.std()))
-
+#print("Media = " + str(df.mean()) )
+#print("Desviación estándar = " + str(df.std()))
+df=pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
+print("El número medio de puertos abiertos en los dispositivos es: "+str(df["P_ABIERTOS"].mean())+" puertos.")
+print("La desviación estándar de puertos abiertos es : "+ str(round(df["P_ABIERTOS"].std(),2)))
+exit(0)
 #4. Media y desviación est´andar del número de servicios inseguros detectados
 
 #5. Media y desviación estándar del número de vulnerabilidades detectadas.
@@ -111,7 +114,8 @@ print("Desviación estándar = " + str(df.std()))
 df=pd.read_sql_query("SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
 print("Como máximo hay "+ str(df["MAX(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]))
 df=pd.read_sql_query("SELECT MIN(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
-print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]))
+print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]) +
+      str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?",conexion, params=(df["ANALISIS_ID"][0]))))#{"id_anali":df["ANALISIS_ID"][0]})[0]))
 # Linkar con device.
 exit(0)
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.

@@ -52,6 +52,7 @@ with open("devices.json") as f:
                 cur.execute("INSERT OR IGNORE INTO PUERTOS (NOMBRE, ANALISIS_ID) VALUES (?,?)",(name,analisis_id))
     print(".... puertos insertados correctamente!")
 
+
 conexion.commit()
 
 

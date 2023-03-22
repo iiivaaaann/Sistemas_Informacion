@@ -163,7 +163,8 @@ def ejercicio3():
 
     #3. Mediana
     #Como el dispositivo puede ser el origen o el destino, se contará como vulnerabilidad detectada si aparece en la alerta en el origen o en el destino
-    df = pd.read_sql_query("select count(*)  as vulnPerDevice, origen from (select origen from alerts union all select destino from alerts) group by origen", conexion)
+    #Pero hay que seguir dividiendo entre mes de julio y agosto, y prioridades. Chequear el código
+    df = pd.read_sql_query("select count(*)  as vulnPerDevice, origen from (select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-07' or '2022-08' group by origen", conexion)
     datata = df.describe()
     print("Sobre los datos descubiertos de las vulnerabilidades según los dispositivos:")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
@@ -172,6 +173,89 @@ def ejercicio3():
     #5. Varianza
     print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
     #6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    #Falta imprimir estos valores agrupando por mes y por prioridad de alerta
+    df = pd.read_sql_query("select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-07' and priority is 1 group by origen, year_month", conexion)
+    print("Sobre alertas en julio, con prioridad 1:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    df = pd.read_sql_query(
+        "select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-07' and priority is 2 group by origen, year_month",
+        conexion)
+    print("Sobre alertas en julio, con prioridad 2:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    df = pd.read_sql_query(
+        "select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-07' and priority is 3 group by origen, year_month",
+        conexion)
+    print("Sobre alertas en julio, con prioridad 3:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    df = pd.read_sql_query(
+        "select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-08' and priority is 1 group by origen, year_month",
+        conexion)
+    print("Sobre alertas en agosto, con prioridad 1:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    df = pd.read_sql_query(
+        "select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-08' and priority is 2 group by origen, year_month",
+        conexion)
+    print("Sobre alertas en julio, con prioridad 2:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
+    print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+    print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+    df = pd.read_sql_query(
+        "select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-08' and priority is 3 group by origen, year_month",
+        conexion)
+    print("Sobre alertas en julio, con prioridad 3:")
+    datata = df.describe()
+    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
+    print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+    # 4. Media
+    print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+    # 5. Varianza
+    print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+    # 6. Máximo y mínimo
     print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
     print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
 
@@ -220,11 +304,12 @@ def ejercicio4(): #Falta el ultimo apartado.
 if __name__ == '__main__':
     print("Creando modelo de tablas:")
     createChartModel()
+    insertInformationFromFiles()
     print("Resolviendo ejercicio 2:")
     ejercicio2()
     print("Resolviendo ejercicio 3:")
     ejercicio3()
-    print("Resolviendo ejercicio 4:")
-    ejercicio4()
+    #print("Resolviendo ejercicio 4:")
+    #ejercicio4()
     conexion.close()
     exit(0)

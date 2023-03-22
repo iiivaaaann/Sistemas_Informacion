@@ -257,7 +257,7 @@ def ejercicio3():
 def ejercicio4(): #Falta el ultimo apartado.
     #1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).
     #df=pd.read_sql_query("SELECT COUNT(*) as num, origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
-    df=pd.read_sql_query("SELECT COUNT(*) as num, origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
+    df=pd.read_sql_query("SELECT COUNT(*) as num, origen AS origen FROM ALERTS WHERE priority = 1 GROUP BY origen ORDER BY num desc",conexion)
     muestra=df[:10].copy()
     x_values=muestra['origen']
     y_values=muestra['num']
@@ -269,7 +269,7 @@ def ejercicio4(): #Falta el ultimo apartado.
     plt.show()
     plt.close("all")
     #2. Número de alertas en el tiempo, representadas en una serie temporal.
-    df=pd.read_sql_query("SELECT time FROM ALERTS ",conexion)
+    df=pd.read_sql_query("SELECT time as time FROM ALERTS ",conexion)
     df.index=df['time']
     print(df)
     #3. Número de alertas por categoría, representadas en un gráfico de barras.
@@ -286,6 +286,7 @@ def ejercicio4(): #Falta el ultimo apartado.
     #4. Dispositivos más vulnerables (Suma de servicios vulnerables y vulnerabilidades detectadas).
     df=pd.read_sql_query("SELECT (DETECT_VULNS+SERVICIOS_INS) suma, DEVICES_ID devices_id FROM ANALISIS", conexion)
     print(df)
+    plt.figure(num=None, figsize=(18, 10), dpi=80, facecolor='w', edgecolor='k')
     x_values=df["devices_id"]
     y_values=df["suma"]
     plt.bar(x_values, y_values)
@@ -307,7 +308,7 @@ if __name__ == '__main__':
     ejercicio2()
     print("Resolviendo ejercicio 3:")
     ejercicio3()
-    #print("Resolviendo ejercicio 4:")
-    #ejercicio4()
+    print("Resolviendo ejercicio 4:")
+    ejercicio4()
     conexion.close()
     exit(0)

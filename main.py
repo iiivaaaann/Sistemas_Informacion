@@ -312,10 +312,11 @@ def ejercicio4(): #Falta el ultimo apartado.
 #       Falta: 4.2, 4.5           #
 ###################################
 
+
 if __name__ == '__main__':
     print("Creando modelo de tablas:")
     createChartModel()
-    insertInformationFromFiles()
+    insertInformationFromFiles(
     print("Resolviendo ejercicio 2:")
     ejercicio2()
     print("Resolviendo ejercicio 3:")

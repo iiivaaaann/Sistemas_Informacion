@@ -6,12 +6,25 @@ conexion= sqlite3.connect('pr1_SI.db')
 cur=conexion.cursor()
 
 #def model_creation()
+#CREATE TAB ALERTS
 
+cur.execute("CREATE TABLE IF NOT EXISTS ALERTS (ID integer PRIMARY KEY autoincrement,TIME TIMESTAMP, SID INT, MSG TEXT, CLASIFICATION TEXT, PRIORITY INT,PROTOCOLO TEXT, ORIGEN TEXT, DESTINO TEXT, PUERTO INT, CONSTRAINT NOT_REP_ALERT UNIQUE(TIME,MSG, sid, puerto))")
 cur.execute("CREATE TABLE if not exists RESPONSABLE (nombre text PRIMARY KEY, telefono int, rol text)")
 cur.execute("CREATE TABLE if not exists DEVICES (id text primary key , ip text, responsable_nombre text, localizacion text, FOREIGN KEY (responsable_nombre) references responsable(nombre))")
 cur.execute("CREATE TABLE if not exists ANALISIS (ID INTEGER PRIMARY KEY autoincrement, devices_id text UNIQUE, servicios int, servicios_ins int, detect_vulns int, FOREIGN KEY (devices_id) references DEVICES(id))")
 cur.execute("CREATE TABLE if not exists PUERTOS (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre text,analisis_id int NOT NULL, FOREIGN KEY (analisis_id) REFERENCES ANALISIS(id) CONSTRAINT NOT_REPEATED_PORTS_ANALISIS UNIQUE (nombre, analisis_id))")
 
+csvData=pd.read_csv("alerts.csv")
+dataFrame=pd.DataFrame(csvData)
+print(len(dataFrame))
+a=0
+for row in dataFrame.itertuples():
+   # print(row[1], row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9])
+    print(row[1])
+    cur.execute("INSERT OR IGNORE INTO ALERTS (TIME, SID, MSG, CLASIFICATION, PRIORITY, PROTOCOLO, ORIGEN, DESTINO, PUERTO) VALUES (?,?,?,?,?,?,?,?,?)", (row[1], row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9]))
+    #Revisar tipado de datos, posiblemente no inserta por eso.
+
+exit(0)
 with open("devices.json") as f:
     devices=json.load(f)
     print("Insertando responsables......")
@@ -106,13 +119,17 @@ print("El número medio de puertos abiertos en los dispositivos es: "+str(df["P_
 print("La desviación estándar de puertos abiertos es : "+ str(round(df["P_ABIERTOS"].std(),2)))
 
 #4. Media y desviación est´andar del número de servicios inseguros detectados
-df=pd.read_sql_query("SELECT COUNT(*) SERV_INSEGUROS, ID FROM ANALISIS GROUP BY ID", conexion)
-print("El número medio de servicios inseguros en los dispositivos es: "+str(df["SERV_INSEGUROS"].mean())+" servicios.")
+df=pd.read_sql_query("SELECT sum(SERVICIOS_INS) SERV_INSEGUROS, ID FROM ANALISIS GROUP BY ID", conexion)
+print("El número medio de servicios inseguros en los dispositivos es: "+str(round(df["SERV_INSEGUROS"].mean(),2))+" servicios.")
+print("La desviación estándar de servicios inseguros en los dispositivos es: "+str(round(df["SERV_INSEGUROS"].std(),2))+" servicios.")
 
 #5. Media y desviación estándar del número de vulnerabilidades detectadas.
-exit(0)
+df=pd.read_sql_query("SELECT SUM(DETECT_VULNS) VULNS, ID FROM ANALISIS GROUP BY ID", conexion)
+print("El número medio de vulnerabilidades detectadas en los dispositivos es: "+str(round(df["VULNS"].mean(),2))+" vulnerabilidades.")
+print("La desviación estándar de vulnerabilidades detectadas en los dispositivos es: "+str(round(df["VULNS"].std(),2))+" vulnerabilidades.")
+
+
 #6. Valor mínimo y valor máximo del total de puertos abiertos. (Consulta un poco compleja por la estructura de la T puertos)
-#SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)
 df=pd.read_sql_query("SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
 print("Como máximo hay "+ str(df["MAX(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0])
       +" y al dispositivo: "+ str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?)",conexion, params=[str(df["ANALISIS_ID"][0])])["id"][0]))
@@ -122,11 +139,13 @@ print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abier
 
 
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
+df=pd.read_sql_query("SELECT DETECT_VULNS FROM ANALISIS", conexion)
+print("Podemos encontrar un mínimo de: " + str(df.min()[0])+" vulnerabilidades detectadas.")
+print("Podemos encontrar un máximo de: " + str(df.max()[0])+" vulnerabilidades detectadas.")
+exit(0)
 
-
-
-
-#Ejer 3
+'''
+#Ejer 3-----> Contiene errores y no ejecuta.
 print("Ejercicio 3. Agrupamos según mes y según prioridad de alerta")
 #Agrupar de forma separada; por prioridad de alerta (1 al 3, de grave a leve), y por fechas (mes de julio o mes de agosto)
 #Según cada agrupación, mostrar con respecto a vulnerabilidades detectadas en los dispositivos (que puede ser origen o destino):
@@ -156,7 +175,7 @@ print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
 #6. Máximo y mínimo
 print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
 print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
-exit(0)
+'''
 #Ejer 4
 
 #1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).
@@ -186,6 +205,14 @@ y_values=df['num']
 plt.bar(x_values,y_values)
 plt.show()
 plt.close("all")
-#4. Dispositivos más vulnerables (Suma de servicios vulnerables y vulnerabilidades detectadas).
 
+#4. Dispositivos más vulnerables (Suma de servicios vulnerables y vulnerabilidades detectadas).
+df=pd.read_sql_query("SELECT (DETECT_VULNS+SERVICIOS_INS) suma, DEVICES_ID devices_id FROM ANALISIS", conexion)
+print(df)
+x_values=df["devices_id"]
+y_values=df["suma"]
+plt.bar(x_values, y_values)
+plt.show()
+plt.close("all")
 #5. Media de puertos abiertos frente a servicios inseguros y frente al total de servicios detectados.
+# Consideramos que "frente" se refiere a proporción?

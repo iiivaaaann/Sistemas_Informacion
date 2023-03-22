@@ -4,7 +4,6 @@ import json
 import matplotlib.pyplot as plt
 conexion= sqlite3.connect('pr1_SI.db')
 cur=conexion.cursor()
-"""
 
 #def model_creation()
 
@@ -139,7 +138,7 @@ print("Mes de Agosto, número de alertas altas: " + str(df["timestamp"][5]))
 df=pd.read_sql_query("select count(*) as MISSING_MSGS, STRFTIME('%Y-%m', timestamp) as year_month, prioridad from ALERTS where msg like '%issing%' group by prioridad, STRFTIME('%Y-%m', timestamp)", conexion)
 print("Todos los valores ausentes encontrados son de prioridad 3")
 print("Mes de Julio, " +str(df["MISSING_MSGS"][0])+" valores ausentes encontrados")
-print("Mes de Agosto, " +str(df["MISSING_MSGS"][1])+" valores ausentes encontrados")"""
+print("Mes de Agosto, " +str(df["MISSING_MSGS"][1])+" valores ausentes encontrados")
 #3. Mediana
 #Como el dispositivo puede ser el origen o el destino, se contará como vulnerabilidad detectada si aparece en la alerta en el origen o en el destino
 df = pd.read_sql_query("select count(*)  as vulnPerDevice, origen from (select origen from alerts union all select destino from alerts) group by origen", conexion)

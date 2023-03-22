@@ -296,17 +296,23 @@ def ejercicio4(): #Falta el ultimo apartado.
     plt.close("all")
     #5. Media de puertos abiertos frente a servicios inseguros y frente al total de servicios detectados.
     # Consideramos que "frente" se refiere a proporción?
-    df=pd.read_sql_query("SELECT devices_id, servicios_ins,detect_vulns FROM ANALISIS", conexion)
-    df2= pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
-    n=len(df.index)
+    # Media o número de puertos abiertos por dispositivo ?
+
+    df1=pd.read_sql_query("SELECT ID,devices_id, servicios_ins,detect_vulns FROM ANALISIS", conexion)
+    df2= pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID as ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
+    df=pd.merge(left=df1,right=df2,left_on='ID',right_on='ID',how = 'outer')
+    df.index = df1['devices_id']
+    n=len(df['devices_id'])
     x=np.arange(n)
     width=0.25
     plt.bar(x-width,df['servicios_ins'],width=width,label="servicios_ins")
     plt.bar(x,df['detect_vulns'],width=width,label="detect_vulns")
+    plt.bar(x + width, df['P_ABIERTOS'], width=width, label="P_ABIERTOS")
     plt.xticks(x,df.index)
     plt.legend(loc='best')
     plt.show()
     plt.close("all")
+
 
 ###################################
 #       Falta: 4.2, 4.5           #

@@ -106,9 +106,11 @@ print("El número medio de puertos abiertos en los dispositivos es: "+str(df["P_
 print("La desviación estándar de puertos abiertos es : "+ str(round(df["P_ABIERTOS"].std(),2)))
 
 #4. Media y desviación est´andar del número de servicios inseguros detectados
+df=pd.read_sql_query("SELECT COUNT(*) SERV_INSEGUROS, ID FROM ANALISIS GROUP BY ID", conexion)
+print("El número medio de servicios inseguros en los dispositivos es: "+str(df["SERV_INSEGUROS"].mean())+" servicios.")
 
 #5. Media y desviación estándar del número de vulnerabilidades detectadas.
-
+exit(0)
 #6. Valor mínimo y valor máximo del total de puertos abiertos. (Consulta un poco compleja por la estructura de la T puertos)
 #SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)
 df=pd.read_sql_query("SELECT MAX(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COUNT(*) AS PUERTOS_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID)", conexion)
@@ -121,6 +123,9 @@ print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abier
 # Linkar con device.
 
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
+
+
+
 
 #Ejer 3
 print("Ejercicio 3. Agrupamos según mes y según prioridad de alerta")

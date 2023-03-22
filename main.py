@@ -2,6 +2,8 @@ import pandas as pd
 import sqlite3
 import json
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 #VARIABLES GLOBALES:
 conexion= sqlite3.connect('pr1_SI.db')
@@ -294,7 +296,17 @@ def ejercicio4(): #Falta el ultimo apartado.
     plt.close("all")
     #5. Media de puertos abiertos frente a servicios inseguros y frente al total de servicios detectados.
     # Consideramos que "frente" se refiere a proporción?
-
+    df=pd.read_sql_query("SELECT devices_id, servicios_ins,detect_vulns FROM ANALISIS", conexion)
+    df2= pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
+    n=len(df.index)
+    x=np.arange(n)
+    width=0.25
+    plt.bar(x-width,df['servicios_ins'],width=width,label="servicios_ins")
+    plt.bar(x,df['detect_vulns'],width=width,label="detect_vulns")
+    plt.xticks(x,df.index)
+    plt.legend(loc='best')
+    plt.show()
+    plt.close("all")
 
 ###################################
 #       Falta: 4.2, 4.5           #

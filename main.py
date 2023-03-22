@@ -4,6 +4,7 @@ import json
 import matplotlib.pyplot as plt
 conexion= sqlite3.connect('pr1_SI.db')
 cur=conexion.cursor()
+"""
 
 #def model_creation()
 
@@ -44,14 +45,14 @@ with open("devices.json") as f:
     print(str(b[0][0])+" analisis en la BBDD")
 #Para insertar en la tabla puertos debemos ver qué puertos abiertos hay en X dispositivo y buscar su analisis_id en la BD
     for i in devices:
-        #print("Device id: " + i["id"])
-        #print("Analisis id: " + str(cur.execute("SELECT ID FROM ANALISIS WHERE DEVICES_ID=?", (i["id"],)).fetchall()[0][0]))
-        #print("Puertos abiertos: " + str(i["analisis"]["puertos_abiertos"]))
+        print("Device id: " + i["id"])
+        print("Analisis id: " + str(cur.execute("SELECT ID FROM ANALISIS WHERE DEVICES_ID=?", (i["id"],)).fetchall()[0][0]))
+        print("Puertos abiertos: " + str(i["analisis"]["puertos_abiertos"]))
         analisis_id=cur.execute("SELECT ID FROM ANALISIS WHERE DEVICES_ID=?", (i["id"],)).fetchall()[0][0]
         for j in i["analisis"]["puertos_abiertos"]:
             if i["analisis"]["puertos_abiertos"]!="None":
                 name=j
-                #print("nombre: " + name + " id analisis: " + str(analisis_id))
+                print("nombre: " + name + " id analisis: " + str(analisis_id))
                 cur.execute("INSERT OR IGNORE INTO PUERTOS (NOMBRE, ANALISIS_ID) VALUES (?,?)",(name,analisis_id))
     print(".... puertos insertados correctamente!")
 
@@ -119,14 +120,40 @@ print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abier
     " y al dispositivo: "+ str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?)",conexion, params=[str(df["ANALISIS_ID"][0])])["id"][0]))
 
 # Linkar con device.
-exit(0)
+
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
 
 #Ejer 3
-
-
-
-
+print("Ejercicio 3. Agrupamos según mes y según prioridad de alerta")
+#Agrupar de forma separada; por prioridad de alerta (1 al 3, de grave a leve), y por fechas (mes de julio o mes de agosto)
+#Según cada agrupación, mostrar con respecto a vulnerabilidades detectadas en los dispositivos (que puede ser origen o destino):
+df = pd.read_sql_query("SELECT STRFTIME('%Y-%m', timestamp) AS year_month, COUNT(*) timestamp, prioridad from alerts GROUP BY STRFTIME('%Y-%m', timestamp), prioridad", conexion)
+#1. Número de observaciones
+print("Mes de Julio, número de alertas bajas: " + str(df["timestamp"][0]))
+print("Mes de Julio, número de alertas medias: " + str(df["timestamp"][1]))
+print("Mes de Julio, número de alertas altas: " + str(df["timestamp"][2]))
+print("Mes de Agosto, número de alertas bajas: " + str(df["timestamp"][3]))
+print("Mes de Agosto, número de alertas medias: " + str(df["timestamp"][4]))
+print("Mes de Agosto, número de alertas altas: " + str(df["timestamp"][5]))
+#2. Número de valores ausentes
+df=pd.read_sql_query("select count(*) as MISSING_MSGS, STRFTIME('%Y-%m', timestamp) as year_month, prioridad from ALERTS where msg like '%issing%' group by prioridad, STRFTIME('%Y-%m', timestamp)", conexion)
+print("Todos los valores ausentes encontrados son de prioridad 3")
+print("Mes de Julio, " +str(df["MISSING_MSGS"][0])+" valores ausentes encontrados")
+print("Mes de Agosto, " +str(df["MISSING_MSGS"][1])+" valores ausentes encontrados")"""
+#3. Mediana
+#Como el dispositivo puede ser el origen o el destino, se contará como vulnerabilidad detectada si aparece en la alerta en el origen o en el destino
+df = pd.read_sql_query("select count(*)  as vulnPerDevice, origen from (select origen from alerts union all select destino from alerts) group by origen", conexion)
+datata = df.describe()
+print("Sobre los datos descubiertos de las vulnerabilidades según los dispositivos:")
+print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
+#4. Media
+print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
+#5. Varianza
+print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
+#6. Máximo y mínimo
+print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
+print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
+exit(0)
 #Ejer 4
 
 #1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).

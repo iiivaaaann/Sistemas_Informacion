@@ -17,14 +17,13 @@ cur.execute("CREATE TABLE if not exists PUERTOS (id INTEGER PRIMARY KEY AUTOINCR
 csvData=pd.read_csv("alerts.csv")
 dataFrame=pd.DataFrame(csvData)
 print(len(dataFrame))
-a=0
+
 for row in dataFrame.itertuples():
    # print(row[1], row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9])
-    print(row[1])
     cur.execute("INSERT OR IGNORE INTO ALERTS (TIME, SID, MSG, CLASIFICATION, PRIORITY, PROTOCOLO, ORIGEN, DESTINO, PUERTO) VALUES (?,?,?,?,?,?,?,?,?)", (row[1], row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9]))
     #Revisar tipado de datos, posiblemente no inserta por eso.
 
-exit(0)
+
 with open("devices.json") as f:
     devices=json.load(f)
     print("Insertando responsables......")
@@ -142,26 +141,28 @@ print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abier
 df=pd.read_sql_query("SELECT DETECT_VULNS FROM ANALISIS", conexion)
 print("Podemos encontrar un mínimo de: " + str(df.min()[0])+" vulnerabilidades detectadas.")
 print("Podemos encontrar un máximo de: " + str(df.max()[0])+" vulnerabilidades detectadas.")
-exit(0)
 
-'''
+
+
 #Ejer 3-----> Contiene errores y no ejecuta.
 print("Ejercicio 3. Agrupamos según mes y según prioridad de alerta")
 #Agrupar de forma separada; por prioridad de alerta (1 al 3, de grave a leve), y por fechas (mes de julio o mes de agosto)
 #Según cada agrupación, mostrar con respecto a vulnerabilidades detectadas en los dispositivos (que puede ser origen o destino):
-df = pd.read_sql_query("SELECT STRFTIME('%Y-%m', timestamp) AS year_month, COUNT(*) timestamp, prioridad from alerts GROUP BY STRFTIME('%Y-%m', timestamp), prioridad", conexion)
+df = pd.read_sql_query("SELECT STRFTIME('%Y-%m', time) AS year_month, COUNT(*) time, priority from alerts GROUP BY STRFTIME('%Y-%m', time), priority", conexion)
 #1. Número de observaciones
-print("Mes de Julio, número de alertas bajas: " + str(df["timestamp"][0]))
-print("Mes de Julio, número de alertas medias: " + str(df["timestamp"][1]))
-print("Mes de Julio, número de alertas altas: " + str(df["timestamp"][2]))
-print("Mes de Agosto, número de alertas bajas: " + str(df["timestamp"][3]))
-print("Mes de Agosto, número de alertas medias: " + str(df["timestamp"][4]))
-print("Mes de Agosto, número de alertas altas: " + str(df["timestamp"][5]))
+print("Mes de Julio, número de alertas bajas: " + str(df["time"][0]))
+print("Mes de Julio, número de alertas medias: " + str(df["time"][1]))
+print("Mes de Julio, número de alertas altas: " + str(df["time"][2]))
+print("Mes de Agosto, número de alertas bajas: " + str(df["time"][3]))
+print("Mes de Agosto, número de alertas medias: " + str(df["time"][4]))
+print("Mes de Agosto, número de alertas altas: " + str(df["time"][5]))
+
 #2. Número de valores ausentes
-df=pd.read_sql_query("select count(*) as MISSING_MSGS, STRFTIME('%Y-%m', timestamp) as year_month, prioridad from ALERTS where msg like '%issing%' group by prioridad, STRFTIME('%Y-%m', timestamp)", conexion)
+df=pd.read_sql_query("select count(*) as MISSING_MSGS, STRFTIME('%Y-%m', time) as year_month, priority from ALERTS where msg like '%issing%' group by priority, STRFTIME('%Y-%m', time)", conexion)
 print("Todos los valores ausentes encontrados son de prioridad 3")
 print("Mes de Julio, " +str(df["MISSING_MSGS"][0])+" valores ausentes encontrados")
 print("Mes de Agosto, " +str(df["MISSING_MSGS"][1])+" valores ausentes encontrados")
+
 #3. Mediana
 #Como el dispositivo puede ser el origen o el destino, se contará como vulnerabilidad detectada si aparece en la alerta en el origen o en el destino
 df = pd.read_sql_query("select count(*)  as vulnPerDevice, origen from (select origen from alerts union all select destino from alerts) group by origen", conexion)
@@ -175,7 +176,7 @@ print("Varianza: " + str(round(pow(datata["vulnPerDevice"][2], 2), 3)))
 #6. Máximo y mínimo
 print("Máximo: " + str(int(datata["vulnPerDevice"][7])), end="\t")
 print("Mínimo: " + str(int(datata["vulnPerDevice"][3])))
-'''
+exit(0)
 #Ejer 4
 
 #1. Mostrar las 10 IP de origen más problemáticas, representadas en un gráfico de barras (las IPs de origen más problemáticas son las que más alertas han generado con prioridad 1).

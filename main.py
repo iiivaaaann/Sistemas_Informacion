@@ -304,10 +304,11 @@ def ejercicio4(): #Falta el ultimo apartado.
     df.index = df1['devices_id']
     n=len(df['devices_id'])
     x=np.arange(n)
-    width=0.25
-    plt.bar(x-width,df['servicios_ins'],width=width,label="servicios_ins")
-    plt.bar(x,df['detect_vulns'],width=width,label="detect_vulns")
-    plt.bar(x + width, df['P_ABIERTOS'], width=width, label="P_ABIERTOS")
+    width=0.3
+    plt.bar(x-width, df['P_ABIERTOS'], width=width, label="puertos abiertos")
+    plt.bar(x,df['servicios_ins'],width=width,label="servicios inseguros")
+    plt.bar(x+width,df['detect_vulns'],width=width,label="servicios detectados")
+
     plt.xticks(x,df.index)
     plt.legend(loc='best')
     plt.show()
@@ -323,11 +324,15 @@ if __name__ == '__main__':
     print("Creando modelo de tablas:")
     createChartModel()
     insertInformationFromFiles()
+    print("--------------------------------------------------------------------------------------------")
     print("Resolviendo ejercicio 2:")
     ejercicio2()
+    print("--------------------------------------------------------------------------------------------")
     print("Resolviendo ejercicio 3:")
     ejercicio3()
+    print("--------------------------------------------------------------------------------------------")
     print("Resolviendo ejercicio 4:")
     ejercicio4()
+    print("--------------------------------------------------------------------------------------------")
     conexion.close()
     exit(0)

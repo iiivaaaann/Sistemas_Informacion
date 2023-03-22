@@ -179,7 +179,6 @@ def ejercicio3():
     df = pd.read_sql_query("select count(*) as vulnPerDevice, origen, year_month, priority from(select origen, STRFTIME('%Y-%m', time) as year_month, priority from alerts union all select destino, STRFTIME('%Y-%m', time) as year_month, priority from alerts) where year_month is '2022-07' and priority is 1 group by origen, year_month", conexion)
     print("Sobre alertas en julio, con prioridad 1:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
@@ -193,7 +192,6 @@ def ejercicio3():
         conexion)
     print("Sobre alertas en julio, con prioridad 2:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
@@ -207,7 +205,6 @@ def ejercicio3():
         conexion)
     print("Sobre alertas en julio, con prioridad 3:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
@@ -221,7 +218,6 @@ def ejercicio3():
         conexion)
     print("Sobre alertas en agosto, con prioridad 1:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
@@ -235,7 +231,6 @@ def ejercicio3():
         conexion)
     print("Sobre alertas en julio, con prioridad 2:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")
@@ -249,7 +244,6 @@ def ejercicio3():
         conexion)
     print("Sobre alertas en julio, con prioridad 3:")
     datata = df.describe()
-    print(str(int(datata["vulnPerDevice"][0])) + " alertas.")
     print("Mediana: " + str(int(datata["vulnPerDevice"][5])), end="\t")
     # 4. Media
     print("Media: " + str(round(datata["vulnPerDevice"][1], 3)), end="\t")

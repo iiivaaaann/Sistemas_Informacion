@@ -295,6 +295,10 @@ def ejercicio4(): #Falta el ultimo apartado.
     # Consideramos que "frente" se refiere a proporción?
 
 
+###################################
+#       Falta: 4.2, 4.5           #
+###################################
+
 if __name__ == '__main__':
     print("Creando modelo de tablas:")
     createChartModel()

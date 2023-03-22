@@ -298,10 +298,10 @@ def ejercicio4(): #Falta el ultimo apartado.
     # Consideramos que "frente" se refiere a proporción?
     # Media o número de puertos abiertos por dispositivo ?
 
-    df1=pd.read_sql_query("SELECT ID,devices_id, servicios_ins,detect_vulns FROM ANALISIS", conexion)
+    df1=pd.read_sql_query("SELECT ID,devices_id, servicios, servicios_ins FROM ANALISIS", conexion)
     df2= pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID as ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
     df=pd.merge(left=df1,right=df2,left_on='ID',right_on='ID',how = 'outer')
-    df = df.fillna(0)
+    df = df.fillna(1) #Cambio a 1 temporalmente, comentar en el grupo
     df.index = df1['devices_id']
     print("-----------Comparación gráfica de barras-----------------")
     n=len(df['devices_id'])
@@ -309,7 +309,7 @@ def ejercicio4(): #Falta el ultimo apartado.
     width=0.3
     plt.bar(x-width, df['P_ABIERTOS'], width=width, label="puertos abiertos")
     plt.bar(x,df['servicios_ins'],width=width,label="servicios inseguros")
-    plt.bar(x+width,df['detect_vulns'],width=width,label="servicios detectados")
+    plt.bar(x+width,df['servicios'],width=width,label="servicios detectados")
     plt.xticks(x,df.index)
     plt.legend(loc='best')
     plt.show()
@@ -318,13 +318,35 @@ def ejercicio4(): #Falta el ultimo apartado.
 
 
     print("-----------Media-----------------")
-    print("Media núemros abiertos: " + str(df['P_ABIERTOS'].mean()))
-    print("Media dispositivos vulnerables: " + str(df['servicios_ins'].mean()))
-    print("Media dispositivos detectados: " + str(df['detect_vulns'].mean()))
-    medias=[df['P_ABIERTOS'].mean(),df['servicios_ins'].mean(),df['detect_vulns'].mean()]
+    print("Media puertos abiertos: " + str(df['P_ABIERTOS'].mean()))
+    print("Media servicios vulnerables: " + str(df['servicios_ins'].mean()))
+    print("Media servicios detectados: " + str(df['servicios'].mean()))
+    medias=[df['P_ABIERTOS'].mean(),df['servicios_ins'].mean(),df['servicios'].mean()]
     names=["puertos abiertos","servicios inseguros","servicios detectados"]
     plt.pie(medias,labels=names)
     plt.show()
+    #Código Trower23
+    serv = df["servicios_ins"][:]
+    vulns = df["servicios"][:]
+    pabi = df["P_ABIERTOS"][:]
+    servpabi = []
+    vulnpabi = []
+    for i in range(len(serv)):
+        servpabi.append(serv[i]/int(pabi[i]))
+        vulnpabi.append(vulns[i]/int(pabi[i]))
+    mean1 = sum(servpabi)/len(servpabi)
+    mean2 = sum(vulnpabi)/len(vulnpabi)
+    n = len(df['devices_id'])
+    x = np.arange(n)
+    width = 0.35
+    plt.bar(x-(width/2), servpabi, width=width, label="ServiciosInseguros/Puerto")
+    plt.bar(x+(width/2), vulnpabi, width=width, label="ServiciosDetectados/Puerto")
+    plt.plot(x, [mean1]*n, label="Media Inseguros/Puerto")
+    plt.plot(x, [mean2]*n, label="Media Detectados/Puerto")
+    plt.xticks(x, df.index)
+    plt.legend(loc='best')
+    plt.show()
+    plt.close("all")
 
 ###################################
 #       Falta: 4.2, 4.5           #

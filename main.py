@@ -301,19 +301,30 @@ def ejercicio4(): #Falta el ultimo apartado.
     df1=pd.read_sql_query("SELECT ID,devices_id, servicios_ins,detect_vulns FROM ANALISIS", conexion)
     df2= pd.read_sql_query("SELECT COUNT(*) P_ABIERTOS, ANALISIS_ID as ID FROM PUERTOS GROUP BY ANALISIS_ID", conexion)
     df=pd.merge(left=df1,right=df2,left_on='ID',right_on='ID',how = 'outer')
+    df = df.fillna(0)
     df.index = df1['devices_id']
+    print("-----------Comparación gráfica de barras-----------------")
     n=len(df['devices_id'])
     x=np.arange(n)
     width=0.3
     plt.bar(x-width, df['P_ABIERTOS'], width=width, label="puertos abiertos")
     plt.bar(x,df['servicios_ins'],width=width,label="servicios inseguros")
     plt.bar(x+width,df['detect_vulns'],width=width,label="servicios detectados")
-
     plt.xticks(x,df.index)
     plt.legend(loc='best')
     plt.show()
     plt.close("all")
+    print("-----------Comparación proporción-----------------")
 
+
+    print("-----------Media-----------------")
+    print("Media núemros abiertos: " + str(df['P_ABIERTOS'].mean()))
+    print("Media dispositivos vulnerables: " + str(df['servicios_ins'].mean()))
+    print("Media dispositivos detectados: " + str(df['detect_vulns'].mean()))
+    medias=[df['P_ABIERTOS'].mean(),df['servicios_ins'].mean(),df['detect_vulns'].mean()]
+    names=["puertos abiertos","servicios inseguros","servicios detectados"]
+    plt.pie(medias,labels=names)
+    plt.show()
 
 ###################################
 #       Falta: 4.2, 4.5           #

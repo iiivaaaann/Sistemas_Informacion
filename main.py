@@ -120,7 +120,6 @@ df=pd.read_sql_query("SELECT MIN(PUERTOS_ABIERTOS), ANALISIS_ID FROM (SELECT COU
 print("Como mínimo hay "+ str(df["MIN(PUERTOS_ABIERTOS)"][0]) + " puertos abiertos correspondientes al id de análisis: " + str(df["ANALISIS_ID"][0]) +
     " y al dispositivo: "+ str(pd.read_sql_query("SELECT ID FROM DEVICES WHERE ID= (SELECT DEVICES_ID FROM ANALISIS WHERE ID=?)",conexion, params=[str(df["ANALISIS_ID"][0])])["id"][0]))
 
-# Linkar con device.
 
 #7. Valor mínimo y valor máximo del número de vulnerabilidades detectadas.
 

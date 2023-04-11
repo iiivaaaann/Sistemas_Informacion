@@ -272,6 +272,7 @@ def ejercicio4(): #Falta el ultimo apartado.
     plt.bar(x_values,y_values)
     plt.show()
     plt.close("all")
+    exit(0)
     #2. Número de alertas en el tiempo, representadas en una serie temporal.
     #df=pd.read_sql_query("SELECT time as time FROM ALERTS ",conexion)
     #df.index=df['time']

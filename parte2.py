@@ -1,15 +1,21 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+import funciones
 
 app = Flask(__name__, template_folder="templates")
 @app.route('/')
 def rootPage():
     return render_template("index.html")
 
-@app.route('/ejercicio1')
+@app.route('/ejercicio1', methods=["GET", "POST"])
 def ejercicio1():
     print("Ejercicio 1")
-    return render_template("ejercicio1.html")
+    if request.method == "POST":
+        numIP = request.form['numIP']
+        numDisp = request.form['numDisp']
+        return render_template("ejercicio1.html", numIP=numIP, numDisp=numDisp)
+    elif request.method == "GET":
+        return render_template("ejercicio1.html")
 
 @app.route('/ejercicio2')
 def ejercicio2():

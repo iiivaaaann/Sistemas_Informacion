@@ -12,7 +12,7 @@ def obtenerTopIps(ntop, conexion):
     plt.figure(num=None, figsize=(14, 6), dpi=80, facecolor='w', edgecolor='k')
     plt.bar(x_values,y_values)
     fichero="Top"+str(ntop)+"_ipsVuln"+".png"
-    plt.savefig("images/"+fichero)
+    plt.savefig("static/images/"+fichero)
     return fichero
 def obtenerTopDispositivos(ntop, conexion):
     df = pd.read_sql_query("SELECT (DETECT_VULNS+SERVICIOS_INS) suma, DEVICES_ID devices_id FROM ANALISIS ORDER BY suma DESC", conexion)
@@ -22,5 +22,5 @@ def obtenerTopDispositivos(ntop, conexion):
     y_values = muestra["suma"]
     plt.bar(x_values, y_values)
     fichero="Top"+str(ntop)+"_vulnDev"+".png"
-    plt.savefig("images/"+fichero)
+    plt.savefig("static/images/"+fichero)
     return fichero

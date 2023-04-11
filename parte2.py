@@ -1,22 +1,35 @@
 
-from flask import Flask
-app = Flask(__name__)
+from flask import Flask, render_template
+
+app = Flask(__name__, template_folder="templates")
 @app.route('/')
-def hello_world():
-    return '<h1>Hello, World! <ul><li>Hola juan</li></ul></h1>'
+def rootPage():
+    return render_template("index.html")
 
-def ejer2():
-    print("Ejer 2")
+@app.route('/ejercicio1')
+def ejercicio1():
+    print("Ejercicio 1")
+    return render_template("ejercicio1.html")
 
-def ejer3():
-    print("Ejer 3")
+@app.route('/ejercicio2')
+def ejercicio2():
+    print("Ejercicio 2")
+    return render_template("ejercicio2.html")
 
-def ejer4():
-    print("Ejer 4")
+@app.route('/ejercicio3')
+def ejercicio3():
+    print("Ejercicio 3")
+    return render_template("ejercicio3.html")
 
-def ejer5():
-    print("Ejer 5")
+@app.route('/ejercicio4')
+def ejercicio4():
+    print("Ejercicio 4")
+    return render_template("ejercicio4.html")
 
+@app.route('/ejercicio5')
+def ejercicio5():
+    print("Ejercicio 5")
+    return render_template("ejercicio5.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

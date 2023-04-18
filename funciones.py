@@ -1,5 +1,8 @@
 import pandas as pd
 import sqlite3
+from IPython.core.display_functions import display
+from IPython.display import HTML as a
+import requests
 from matplotlib import pyplot as plt
 #VARIABLES GLOBALES:
 #conexion= sqlite3.connect('pr1_SI.db')
@@ -24,3 +27,15 @@ def obtenerTopDispositivos(ntop, conexion):
     fichero="Top"+str(ntop)+"_vulnDev"+".png"
     plt.savefig("static/images/"+fichero)
     return fichero
+
+def ej3():
+    print("Ejercicio 3")
+    response = requests.get("https://cve.circl.lu/api/last").text
+    df = pd.read_json(response)
+    df = df.iloc[:10]
+    df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
+    display(df)
+    print(df.to_html())
+
+ej3()
+

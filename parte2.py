@@ -3,6 +3,8 @@ import pandas as pd
 from flask import Flask, render_template, request
 import funciones
 import sqlite3
+from IPython.display import HTML
+
 
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
@@ -32,11 +34,11 @@ def ejercicio2():
 @app.route('/ejercicio3')
 def ejercicio3():
     print("Ejercicio 3")
-    response = requests.get("https://cve.circl.lu/api/last").text
+    response = requests.get("https://cve.circl.lu/api/last/10").text
     df = pd.read_json(response)
     df = df.iloc[:10]
     df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
-    return render_template("ejercicio3.html",df=df)
+    return render_template("ejercicio3.html", tables=[df.to_html()])
 
 @app.route('/ejercicio4')
 def ejercicio4():

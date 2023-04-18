@@ -5,6 +5,10 @@
     <title>Ejercicio 3</title>
 </head>
 <body>
-{{df.to_html()}}
+<h1>10 últimas vulnerabilidaes en tiempo real:  </h1><br>
+{% for table in tables %}
+
+            {{ table|safe }}
+{% endfor %}
 </body>
 </html>

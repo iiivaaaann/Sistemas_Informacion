@@ -26,10 +26,17 @@ def ejercicio1():
     elif request.method == "GET":
         return render_template("ejercicio1.html")
 
-@app.route('/ejercicio2')
+@app.route('/ejercicio2', methods=['GET', 'POST'])
 def ejercicio2():
     print("Ejercicio 2")
-    return render_template("ejercicio2.html")
+    if request.method == "POST":
+        print(request)
+        numDisp = int(request.form['numDisp'])
+        peli = int(request.form['peli'])
+        f1 = funciones.obtenerTopPeligrosos(numDisp, peli, conexion)
+        return render_template("ejercicio2.html", peli=peli, f1=f1)
+    elif request.method == "GET":
+        return render_template("ejercicio2.html")
 
 @app.route('/ejercicio3')
 def ejercicio3():

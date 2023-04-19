@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import sqlite3
 from IPython.core.display_functions import display

@@ -5,6 +5,26 @@
     <title>Ejercicio 2</title>
 </head>
 <body>
-<p>Top X de dispositivos peligrosos</p>
+<h3>Indica cuántos dispositivos peligrosos a mostrar en el top:</h3>
+<form action="" method="post">
+    <label>Top dispositivos peligrosos:</label>
+    <input type="number" name="numDisp"><br>
+    <label>Porcentaje de servicios inseguros:</label>
+    <input type="radio" name="peli" value=1 checked>>33%
+    <input type="radio" name="peli" value=0><=33%<br>
+    <input type="submit" value="mostrar">
+</form>
+{% if peli == 1 %}
+<h2>Top dispositivos peligrosos</h2>
+<p>Eje Y -> Porcentaje de servicios inseguros</p>
+<p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
+<img src="/static/images/{{f1}}"><br>
+{% endif %}
+{% if peli == 0 %}
+<h2>Top dispositivos NO peligrosos</h2>
+<p>Eje Y -> Porcentaje de servicios inseguros</p>
+<p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
+<img src="/static/images/{{f1}}"><br>
+{% endif %}
 </body>
 </html>

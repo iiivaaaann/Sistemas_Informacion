@@ -36,7 +36,6 @@ def ejercicio1():
 def ejercicio2():
     print("Ejercicio 2")
     if request.method == "POST":
-        print(request)
         numDisp = int(request.form['numDisp'])
         peli = int(request.form['peli'])
         f1 = funciones.obtenerTopPeligrosos(numDisp, peli, conexion)

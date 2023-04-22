@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Ejercicio 2</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-<h3>Indica cuántos dispositivos peligrosos a mostrar en el top:</h3>
-<form action="" method="post">
-    <label>Top dispositivos peligrosos:</label>
-    <input type="number" name="numDisp"><br>
-    <label>Porcentaje de servicios inseguros:</label>
-    <input type="radio" name="peli" value=1 checked>>33%
-    <input type="radio" name="peli" value=0><=33%<br>
-    <input type="submit" value="mostrar">
-</form>
-{% if peli == 1 %}
-<h2>Top dispositivos peligrosos</h2>
-<p>Eje Y -> Porcentaje de servicios inseguros</p>
-<p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
-<img src="/static/images/{{f1}}"><br>
-{% endif %}
-{% if peli == 0 %}
-<h2>Top dispositivos NO peligrosos</h2>
-<p>Eje Y -> Porcentaje de servicios inseguros</p>
-<p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
-<img src="/static/images/{{f1}}"><br>
-{% endif %}
+    <div class="container">
+        <h3 class="mt-3">Indica cuántos dispositivos peligrosos a mostrar en el top:</h3>
+        <form action="" method="post">
+            <div class="form-group">
+                <label>Top dispositivos peligrosos:</label>
+                <input type="number" class="form-control" name="numDisp">
+            </div>
+            <div class="form-group">
+                <label>Porcentaje de servicios inseguros:</label>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="peli" value=1 checked>
+                    <label class="form-check-label"> > 33%</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" name="peli" value=0>
+                    <label class="form-check-label"> <= 33%</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Mostrar</button>
+        </form>
+        {% if peli == 1 %}
+        <h2 class="mt-3">Top dispositivos peligrosos</h2>
+        <p>Eje Y -> Porcentaje de servicios inseguros</p>
+        <p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
+        <img src="/static/images/{{f1}}" class="img-fluid"><br>
+        {% endif %}
+        {% if peli == 0 %}
+        <h2 class="mt-3">Top dispositivos NO peligrosos</h2>
+        <p>Eje Y -> Porcentaje de servicios inseguros</p>
+        <p>Eje X -> Nombre del dispositivo que ejecuta esos servicios</p>
+        <img src="/static/images/{{f1}}" class="img-fluid"><br>
+        {% endif %}
+    </div>
 </body>
 </html>

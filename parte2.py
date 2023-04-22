@@ -1,19 +1,16 @@
-import pdfkit
 import requests
 import pandas as pd
-from flask import Flask, render_template, request, send_file, make_response, Response
+from flask import Flask, render_template, request, Response
 from reportlab.lib.utils import ImageReader
 import io
 import funciones
 import sqlite3
-
 from io import BytesIO
 from flask import make_response
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
-from xhtml2pdf import pisa
-from api2pdf import Api2Pdf
+from flask_weasyprint import HTML, render_pdf, CSS
 
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
@@ -158,27 +155,37 @@ def ejercicio3(pdf=False):
     if not pdf:
         return render_template("ejercicio3.html", tables=[df.to_html()])
     elif pdf:
-        return Response(df.to_html())
+        return df.to_html()
+@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
+def pdf3():
+    css = CSS(string='''
+           @page { size: A4 landscape; margin: 0cm }
+           table.dataframe { border-collapse: collapse; }
+           table.dataframe th, table.dataframe td {
+               border: 1px solid black;
+               padding: 5px;
+               text-align: center;
+           }
+           .chart-container { border: 1px solid #ccc; padding: 10px; }
+           .chart-title { font-size: 20px; font-weight: bold; text-align: center; }
+           .chart-axis-label { font-size: 14px; font-weight: bold; }
+           .chart-axis-tick { font-size: 12px; }
+       ''')
+    pdf=HTML(string=ejercicio3(True)).write_pdf(stylesheets=[css])
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+    return response
 
-
-@app.route('/ejercicio4')
+'''@app.route('/ejercicio4')
 def ejercicio4(): ## Para usar esto es necesario instalar wkhtmltopdf con sudo apt-get o brew. para windows buscar ; de momento solo genera el pdf del ejercicio 3
-    html = ejercicio3(True).data.decode('utf-8') + ejercicio1(True)
+    html = ejercicio3(True).data.decode('utf-8') 
     pdf = pdfkit.from_string(html, False, options={'quiet': ''})
     response = make_response(pdf)
     response.headers["Content-Type"] = "application/pdf"
     response.headers["Content-Disposition"] = "inline; filename=output.pdf"
     return response
-
-@app.route('/testpdf', methods=['GET'])
-def pdftest():
-    ejercicio1(True)
-    #response = make_response(buffer)
-    #response.headers['Content-Type'] = 'application/pdf'
-    #response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-    #return response
-    #pdf_data = ejercicio1(True)
-    #return Response(pdf_data, mimetype='application/pdf')
+'''
 
 
 @app.route('/ejercicio5')

@@ -2,13 +2,19 @@ import pdfkit
 import requests
 import pandas as pd
 from flask import Flask, render_template, request, send_file, make_response, Response
+from reportlab.lib.utils import ImageReader
+import io
 import funciones
 import sqlite3
+
+from io import BytesIO
+from flask import make_response
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
 from xhtml2pdf import pisa
 from api2pdf import Api2Pdf
-API2PDF_API_KEY='5a12d7c8-9255-47a1-aaf9-a73ead097999'
-USERAGENT = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
 
@@ -17,8 +23,33 @@ app = Flask(__name__, template_folder="templates")
 def rootPage():
     return render_template("index.html")
 
+
+@app.route('/testtpdf')
+def pdfttest():
+    # Create a file-like buffer to receive PDF data.
+    buffer = BytesIO()
+
+    # Create the PDF object, using the BytesIO object as its "file."
+    p = canvas.Canvas(buffer, pagesize=letter)
+
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+    p.drawString(1 * inch, 10.5 * inch, "Hello world!")
+    p.drawString(1 * inch, 10 * inch, "This is a test PDF file generated with ReportLab.")
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    response = make_response(buffer.getvalue())
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename=output.pdf"
+    return response
 @app.route('/ejercicio1', methods=["GET", "POST"])
-def ejercicio1():
+def ejercicio1(pdf=False):
     print("Ejercicio 1")
     if request.method == "POST":
         numIP = request.form['numIP']
@@ -28,7 +59,59 @@ def ejercicio1():
             f1=funciones.obtenerTopIps(int(numIP), conexion)
         if numDisp:
             f2=funciones.obtenerTopDispositivos(int(numDisp), conexion)
-        return render_template("ejercicio1.html", numIP=numIP, numDisp=numDisp, f1=f1, f2=f2)
+        if pdf:
+            buffer = io.BytesIO()
+            p = canvas.Canvas(buffer, pagesize=letter)
+            if f1:
+                #p.drawString(100, 600, "Top IPs:")
+                # Add top IPs image
+                top_ips_image = ImageReader("static/images/" + f1)
+                p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
+            if f2:
+                # Add top devices image
+                top_devices_image = ImageReader("static/images/" + f2)
+                p.drawImage(top_devices_image, x=50, y=50, width=7 * inch, height=3.5 * inch)
+            p.showPage()
+            p.save()
+            buffer.seek(0)
+            response = make_response(buffer.getvalue())
+            response.headers['Content-Type'] = 'application/pdf'
+            response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+            return response
+
+        else:
+            return render_template("ejercicio1.html", numIP=numIP, numDisp=numDisp, f1=f1, f2=f2)
+    elif request.method == "GET":
+        return render_template("ejercicio1.html")
+@app.route('/ejercicio1/pdf', methods=['GET', 'POST'])
+def pdf1():
+    if request.method == "POST":
+        numIP = request.form['numIP']
+        numDisp = request.form['numDisp']
+        f1=f2=None
+        if numIP:
+            f1=funciones.obtenerTopIps(int(numIP), conexion)
+        if numDisp:
+            f2=funciones.obtenerTopDispositivos(int(numDisp), conexion)
+
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        if f1:
+                #p.drawString(100, 600, "Top IPs:")
+                # Add top IPs image
+            top_ips_image = ImageReader("static/images/" + f1)
+            p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
+        if f2:
+                # Add top devices image
+            top_devices_image = ImageReader("static/images/" + f2)
+            p.drawImage(top_devices_image, x=50, y=50, width=7 * inch, height=3.5 * inch)
+        p.showPage()
+        p.save()
+        buffer.seek(0)
+        response = make_response(buffer.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+        return response
     elif request.method == "GET":
         return render_template("ejercicio1.html")
 
@@ -42,7 +125,29 @@ def ejercicio2():
         return render_template("ejercicio2.html", peli=peli, f1=f1)
     elif request.method == "GET":
         return render_template("ejercicio2.html")
+@app.route('/ejercicio2/pdf', methods=['GET', 'POST'])
+def pdf2():
+    if request.method == "POST":
+        numDisp = int(request.form['numDisp'])
+        peli = int(request.form['peli'])
+        f1 = funciones.obtenerTopPeligrosos(numDisp, peli, conexion)
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        if f1:
+            # p.drawString(100, 600, "Top IPs:")
+            # Add top IPs image
+            top_ips_image = ImageReader("static/images/" + f1)
+            p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
 
+        p.showPage()
+        p.save()
+        buffer.seek(0)
+        response = make_response(buffer.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+        return response
+    elif request.method == "GET":
+        return render_template("ejercicio2.html")
 @app.route('/ejercicio3')
 def ejercicio3(pdf=False):
     print("Ejercicio 3")
@@ -57,13 +162,24 @@ def ejercicio3(pdf=False):
 
 
 @app.route('/ejercicio4')
-def ejercicio4(): ## Para usar esto es necesario instalar wkhtmltopdf con sudo apt-get o brew. para windows buscar xd ; de momento solo genera el pdf del ejercicio 3
-    html = ejercicio3(True).data.decode('utf-8')
+def ejercicio4(): ## Para usar esto es necesario instalar wkhtmltopdf con sudo apt-get o brew. para windows buscar ; de momento solo genera el pdf del ejercicio 3
+    html = ejercicio3(True).data.decode('utf-8') + ejercicio1(True)
     pdf = pdfkit.from_string(html, False, options={'quiet': ''})
     response = make_response(pdf)
     response.headers["Content-Type"] = "application/pdf"
     response.headers["Content-Disposition"] = "inline; filename=output.pdf"
     return response
+
+@app.route('/testpdf', methods=['GET'])
+def pdftest():
+    ejercicio1(True)
+    #response = make_response(buffer)
+    #response.headers['Content-Type'] = 'application/pdf'
+    #response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+    #return response
+    #pdf_data = ejercicio1(True)
+    #return Response(pdf_data, mimetype='application/pdf')
+
 
 @app.route('/ejercicio5')
 def ejercicio5():

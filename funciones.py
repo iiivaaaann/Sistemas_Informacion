@@ -30,42 +30,6 @@ def obtenerTopDispositivos(ntop, conexion):
     plt.savefig("static/images/"+fichero)
     return fichero
 
-def obtenerTopPeligrosos(ntop, peli, conexion):
-    df = pd.read_sql_query("SELECT ID,devices_id, servicios, servicios_ins FROM ANALISIS ORDER BY servicios_ins desc", conexion)
-    limit = 0
-    describe = []
-    for i, name in enumerate(df['devices_id']):
-        danger = df['servicios_ins'][i]/df['servicios'][i]
-        if danger > 0.3333:
-           limit += 1
-        elif math.isnan(danger):
-            danger = 0
-        describe.append((df['devices_id'][i], round(danger, 4)*100))
-    x_values = []
-    y_values = []
-    describe.sort(key= lambda x: x[1], reverse=True)
-    if peli == 1:
-        i = 0
-        while i < ntop and i < len(describe):
-            tup = describe[i]
-            if i < limit:
-                x_values.append(tup[0])
-                y_values.append(tup[1])
-            i += 1
-    else:
-        i = limit
-        while i < (ntop+limit) and i < len(describe):
-            tup = describe[i]
-            x_values.append(tup[0])
-            y_values.append(tup[1])
-            i += 1
-    plt.figure(num=None, figsize=(18, 10), dpi=80, facecolor='w', edgecolor='k')
-    plt.bar(x_values, y_values)
-    plt.yticks(y_values)
-    fichero="Top"+str(ntop)+"_dispPeli"+".png"
-    plt.savefig("static/images/"+fichero)
-    return fichero
-
 def ej3():
     print("Ejercicio 3")
     response = requests.get("https://cve.circl.lu/api/last").text
@@ -75,7 +39,46 @@ def ej3():
     display(df)
     print(df.to_html())
 
+def obtenerTopPeligrosos(ntop, peli, conexion):
+     df = pd.read_sql_query("SELECT ID,devices_id, servicios, servicios_ins FROM ANALISIS ORDER BY servicios_ins desc", conexion)
+     limit = 0
+     describe = []
+     for i, name in enumerate(df['devices_id']):
+         danger = df['servicios_ins'][i]/df['servicios'][i]
+         if danger > 0.3333:
+            limit += 1
+         elif math.isnan(danger):
+             danger = 0
+         describe.append((df['devices_id'][i], round(danger, 4)*100))
+     x_values = []
+     y_values = []
+     describe.sort(key= lambda x: x[1], reverse=True)
+     if peli == 1:
+         i = 0
+         while i < ntop and i < len(describe):
+             tup = describe[i]
+             if i < limit:
+                 x_values.append(tup[0])
+                 y_values.append(tup[1])
+             i += 1
+     else:
+         i = limit
+         while i < (ntop+limit) and i < len(describe):
+             tup = describe[i]
+             x_values.append(tup[0])
+             y_values.append(tup[1])
+             i += 1
+     plt.figure(num=None, figsize=(18, 10), dpi=80, facecolor='w', edgecolor='k')
+     plt.bar(x_values, y_values)
+     plt.yticks(y_values)
+     fichero="Top"+str(ntop)+"_dispPeli"+".png"
+     plt.savefig("static/images/"+fichero)
+     return fichero
+
+
+
+
 if __name__ == "__main__":
-    #checkeando el valor de __name__ prevenimos que se ejecute ej3() al ejecutar el archivo parte2.py
-    ej3()
+     #checkeando el valor de __name__ prevenimos que se ejecute ej3() al ejecutar el archivo parte2.py
+    print("funciones_file")
 

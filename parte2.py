@@ -56,28 +56,7 @@ def ejercicio1(pdf=False):
             f1=funciones.obtenerTopIps(int(numIP), conexion)
         if numDisp:
             f2=funciones.obtenerTopDispositivos(int(numDisp), conexion)
-        if pdf:
-            buffer = io.BytesIO()
-            p = canvas.Canvas(buffer, pagesize=letter)
-            if f1:
-                #p.drawString(100, 600, "Top IPs:")
-                # Add top IPs image
-                top_ips_image = ImageReader("static/images/" + f1)
-                p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
-            if f2:
-                # Add top devices image
-                top_devices_image = ImageReader("static/images/" + f2)
-                p.drawImage(top_devices_image, x=50, y=50, width=7 * inch, height=3.5 * inch)
-            p.showPage()
-            p.save()
-            buffer.seek(0)
-            response = make_response(buffer.getvalue())
-            response.headers['Content-Type'] = 'application/pdf'
-            response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-            return response
-
-        else:
-            return render_template("ejercicio1.html", numIP=numIP, numDisp=numDisp, f1=f1, f2=f2)
+        return render_template("ejercicio1.html", numIP=numIP, numDisp=numDisp, f1=f1, f2=f2)
     elif request.method == "GET":
         return render_template("ejercicio1.html")
 @app.route('/ejercicio1/pdf', methods=['GET', 'POST'])
@@ -177,15 +156,7 @@ def pdf3():
     response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
     return response
 
-'''@app.route('/ejercicio4')
-def ejercicio4(): ## Para usar esto es necesario instalar wkhtmltopdf con sudo apt-get o brew. para windows buscar ; de momento solo genera el pdf del ejercicio 3
-    html = ejercicio3(True).data.decode('utf-8') 
-    pdf = pdfkit.from_string(html, False, options={'quiet': ''})
-    response = make_response(pdf)
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "inline; filename=output.pdf"
-    return response
-'''
+
 
 
 @app.route('/ejercicio5')

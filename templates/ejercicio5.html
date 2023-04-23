@@ -3,8 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>Ejercicio 5</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
+    <style>
+        #result-container {
+            margin: 0 auto;
+            width: 60%;
+            height: 150px;
+            border: 3px solid black;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .text-danger {
+            color: red;
+            animation: blinker 0.8s linear infinite;
+        }
+        .text-success {
+            color: green;
+        }
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+        .blink {
+        animation: blinker 1s linear infinite;
+        }
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+            }
+    }
+    </style>
 </head>
 <body>
-<p>Cositas</p>
+<div class="container">
+    <h1 class="mt-4"> Checkeamos si tu dispositivo es seguro en menos de 1 segundo!!!</h1>
+    <form action="" method="post">
+        <div class="mb-3">
+            <label class="form-label">Dame el nombre de tu dispositivo:</label>
+            <input type="text" name="id" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Cuantos servicios tienes:</label>
+            <input type="number" name="serv" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">¿Cuantos servicios piensas que son inseguros?</label>
+            <input type="number" name="servin" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Selecciona una opción:</label>
+            <div class="form-group">
+                <label for="option">Opciones:</label>
+                <select id="option" name="option" class="form-control" required>
+                    <option value="regresion_lineal">Modelo regresión lineal</option>
+                    <option value="modelo_x">Modelo X</option>
+                    <option value="modelo_y">Modelo Y</option>
+                </select>
+            </div>
+        </div>
+        <input type="submit" value="Mostrar" class="btn btn-primary">
+    </form>
+</div>
+{% if result %}
+    <!-- Show results -->
+    {% if result.endswith("inseguro") %}
+        <div id="result-container" class="text-danger blink">{{result}}</div>
+    {% else %}
+        <div id="result-container" class="text-success blink">{{result}}</div>
+    {% endif %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

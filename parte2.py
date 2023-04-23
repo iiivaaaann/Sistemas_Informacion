@@ -1,3 +1,6 @@
+import json
+import os
+
 import requests
 import pandas as pd
 from flask import Flask, render_template, request, Response
@@ -11,6 +14,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from flask_weasyprint import HTML, render_pdf, CSS
+from Ejercicio5 import my_linear as l
 
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
@@ -20,33 +24,8 @@ app = Flask(__name__, template_folder="templates")
 def rootPage():
     return render_template("index.html")
 
-
-@app.route('/testtpdf')
-def pdfttest():
-    # Create a file-like buffer to receive PDF data.
-    buffer = BytesIO()
-
-    # Create the PDF object, using the BytesIO object as its "file."
-    p = canvas.Canvas(buffer, pagesize=letter)
-
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(1 * inch, 10.5 * inch, "Hello world!")
-    p.drawString(1 * inch, 10 * inch, "This is a test PDF file generated with ReportLab.")
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
-    buffer.seek(0)
-    response = make_response(buffer.getvalue())
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "inline; filename=output.pdf"
-    return response
 @app.route('/ejercicio1', methods=["GET", "POST"])
-def ejercicio1(pdf=False):
+def ejercicio1():
     print("Ejercicio 1")
     if request.method == "POST":
         numIP = request.form['numIP']
@@ -159,10 +138,20 @@ def pdf3():
 
 
 
-@app.route('/ejercicio5')
+@app.route('/ejercicio5', methods=["GET", "POST"])
 def ejercicio5():
-    print("Ejercicio 5")
-    return render_template("ejercicio5.html")
+    path="Ejercicio5/devices_IA_clases.json"
+
+    if request.method == "POST":
+        id = request.form['id']
+        nServ = request.form['serv']
+        nServIns=request.form['servin']
+        op=request.form['option']
+        #print((id, nServ, nServIns, op))
+        if op == 'regresion_lineal':
+            return render_template("ejercicio5.html", result=l.linear_prediction(path,id, nServ, nServIns))
+    elif request.method == "GET":
+        return render_template("ejercicio5.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

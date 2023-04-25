@@ -6,7 +6,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 
 
-
 def create_and_train_Linear(path):
     #data= pd.read_json("devices_IA_predecir.json") # open the data file
     train_data= pd.read_json(path)

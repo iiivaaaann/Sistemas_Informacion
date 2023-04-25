@@ -12,9 +12,10 @@ from flask import make_response
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
-from flask_weasyprint import HTML, render_pdf, CSS
+#from flask_weasyprint import HTML, render_pdf, CSS
 from Ejercicio5 import my_linear as l
 from Ejercicio5 import DecisionTreeClassifier as tree
+from Ejercicio5 import my_randomforest as forest
 
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
@@ -114,7 +115,7 @@ def ejercicio3(pdf=False):
         return render_template("ejercicio3.html", tables=[df.to_html()])
     elif pdf:
         return df.to_html()
-@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
+"""@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
 def pdf3():
     css = CSS(string='''
            @page { size: A4 landscape; margin: 0cm }
@@ -133,7 +134,7 @@ def pdf3():
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-    return response
+    return response """
 
 
 
@@ -151,6 +152,8 @@ def ejercicio5():
             return render_template("ejercicio5.html", result=l.linear_prediction(path,id, nServ, nServIns))
         elif op == 'decision_tree':
             return render_template("ejercicio5.html", result=tree.webpredict(id, nServ, nServIns))
+        elif op == 'random_forest':
+            return render_template("ejercicio5.html", result=forest.random_forest_prediction(path, id, nServ, nServIns))
     elif request.method == "GET":
         return render_template("ejercicio5.html")
 

@@ -7,12 +7,14 @@ import graphviz #https://graphviz.org/download/
 #Split data
 iris = load_iris()
 X, y = iris.data, iris.target
+print(type(X))
 clf = RandomForestClassifier(max_depth=2, random_state=0,n_estimators=10)
 clf.fit(X, y)
 print(str(X[0]) + " " + str(y[0]))
+print(X[0])
 print(clf.predict([X[0]]))
 
-for i in range(len(clf.estimators_)):
+"""for i in range(len(clf.estimators_)):
     print(i)
     estimator = clf.estimators_[i]
     export_graphviz(estimator,
@@ -21,4 +23,4 @@ for i in range(len(clf.estimators_)):
                     class_names=iris.target_names,
                     rounded=True, proportion=False,
                     precision=2, filled=True)
-    call(['dot', '-Tpng', 'tree.dot', '-o', 'tree'+str(i)+'.png', '-Gdpi=600'])
+    call(['dot', '-Tpng', 'tree.dot', '-o', 'tree'+str(i)+'.png', '-Gdpi=600'])"""

@@ -44,8 +44,10 @@ def result():
     print(f"Número de dispositivos seguros: {counts[0]}")
     print(f"Number de dispositivos peligrosos: {counts[1]}")
 
+
 if __name__ == "__main__":
     result()
     grafica()
+    webpredict("Dispositivo",6,2)
 
 

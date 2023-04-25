@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def create_and_train_Linear(path):
-    #data= pd.read_json("devices_IA_predecir.json") # open the data file
+    #data= pd.read_json("../json/devices_IA_predecir.json") # open the data file
     train_data= pd.read_json(path)
     train_data["division"]=(train_data["servicios_inseguros"]/train_data["servicios"]).fillna(0)
     #data["division"]=(train_data["servicios_inseguros"]/train_data["servicios"]).fillna(0)

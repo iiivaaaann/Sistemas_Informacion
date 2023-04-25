@@ -8,7 +8,6 @@ from reportlab.lib.utils import ImageReader
 import io
 import funciones
 import sqlite3
-from io import BytesIO
 from flask import make_response
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -140,8 +139,7 @@ def pdf3():
 
 @app.route('/ejercicio5', methods=["GET", "POST"])
 def ejercicio5():
-    path="Ejercicio5/devices_IA_clases.json"
-
+    path="json/devices_IA_clases.json"
     if request.method == "POST":
         id = request.form['id']
         nServ = request.form['serv']
@@ -150,6 +148,8 @@ def ejercicio5():
         #print((id, nServ, nServIns, op))
         if op == 'regresion_lineal':
             return render_template("ejercicio5.html", result=l.linear_prediction(path,id, nServ, nServIns))
+        elif op == 'decision_tree':
+            return render_template("ejercicio5.html", result=l.linear_prediction(path, id, nServ, nServIns))
     elif request.method == "GET":
         return render_template("ejercicio5.html")
 

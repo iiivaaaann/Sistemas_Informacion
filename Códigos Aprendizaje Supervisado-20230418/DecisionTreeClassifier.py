@@ -1,14 +1,13 @@
+from six import StringIO
 from sklearn import tree
-from sklearn.datasets import load_iris
-import graphviz #https://graphviz.org/download/
 import pandas as pd
-import pandas as pd
-
-from sklearn.model_selection import train_test_split # Import train_test_split function
-from sklearn import metrics
+import pydotplus
+from IPython.display import Image
+import sklearn.externals
 
 def train():
     df=pd.read_json("../JSON Ejercicios IA 202223-20230418/devices_IA_clases.json")
+    cols=["servicios","servicios_inseguros"]
     X=df[["servicios","servicios_inseguros"]]
     y=df.peligroso
     print(X)
@@ -16,9 +15,19 @@ def train():
     clf = tree.DecisionTreeClassifier()
     clf = clf.fit(X, y)
     # Predict
-    data=pd.DataFrame({'servicios':[3,2], 'servicios_inseguros':[0,1]})
+    arr1=df.servicios
+    arr2=df.servicios_inseguros
+    data=pd.DataFrame({'servicios':arr1, 'servicios_inseguros':arr2})
     print(clf.predict(data))
     # Print plot
+
+    dot_data = StringIO()
+    tree.export_graphviz(clf, out_file=dot_data,
+                filled=True, rounded=True,
+                special_characters=True,feature_names = cols,class_names=['0','1'])
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+    graph.write_png('disposivtos.png')
+    Image(graph.create_png())
 
 
 train()

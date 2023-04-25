@@ -14,6 +14,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from flask_weasyprint import HTML, render_pdf, CSS
 from Ejercicio5 import my_linear as l
+from Ejercicio5 import DecisionTreeClassifier as tree
 
 conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
@@ -149,7 +150,7 @@ def ejercicio5():
         if op == 'regresion_lineal':
             return render_template("ejercicio5.html", result=l.linear_prediction(path,id, nServ, nServIns))
         elif op == 'decision_tree':
-            return render_template("ejercicio5.html", result=l.linear_prediction(path, id, nServ, nServIns))
+            return render_template("ejercicio5.html", result=tree.webpredict(id, nServ, nServIns))
     elif request.method == "GET":
         return render_template("ejercicio5.html")
 

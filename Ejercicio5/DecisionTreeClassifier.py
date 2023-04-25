@@ -9,8 +9,6 @@ def train():
     df=pd.read_json("../json/devices_IA_clases.json")
     X=df[["servicios","servicios_inseguros"]]
     y=df.peligroso
-    print(X)
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
     clf = tree.DecisionTreeClassifier()
     clf = clf.fit(X, y)
     return clf
@@ -24,6 +22,12 @@ def predict():
     data = pd.DataFrame({'servicios': arr1, 'servicios_inseguros': arr2})
     return clf.predict(data)
 
+def webpredict(id, nserv, servIns):
+    clf = train()
+    data = pd.DataFrame({'servicios': nserv, 'servicios_inseguros': servIns})
+    result = "El dispositivo " + id + (" es seguro" if clf.predict(data) == 0 else " es inseguro")
+    return result
+
 def grafica():
     clf=train()
     cols = ["servicios", "servicios_inseguros"]
@@ -36,13 +40,12 @@ def grafica():
     Image(graph.create_png())
 def result():
     arr=predict()
-    # Use Counter to count the number of occurrences of each element
     counts = Counter(arr)
-    # Print the results
     print(f"Número de dispositivos seguros: {counts[0]}")
-    print(f"Number of 1s: {counts[1]}")
+    print(f"Number de dispositivos peligrosos: {counts[1]}")
 
 if __name__ == "__main__":
-    train()
+    result()
+    grafica()
 
 

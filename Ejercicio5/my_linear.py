@@ -38,8 +38,27 @@ def linear_prediction(path, id, nserv, servIns):
     result="El dispositivo " + id + (" es seguro" if y_pred_umbralizado[0] == 0 else " es inseguro")
     return result
 
+def prediction_file():
+    data= pd.read_json("devices_IA_predecir_v2.json") # open the data file
+    train_data = pd.read_json("devices_IA_clases.json")
+    train_data["division"] = (train_data["servicios_inseguros"] / train_data["servicios"]).fillna(0)
+    data["division"]=(train_data["servicios_inseguros"]/train_data["servicios"]).fillna(0)
+    X_train = np.array(train_data["division"]).reshape(-1, 1)
+    y_train = train_data["peligroso"]
+    model = linear_model.LinearRegression()
+    model.fit(X_train, y_train)
+    X_data=np.array(data["division"]).reshape(-1,1)
+    pred=model.predict(X_data)
+    dec_umbral=0.5
+    print(pred)
+    y_pred_umbralizado = [1 if y >= dec_umbral else 0 for y in pred]
+    for i in range(len(y_pred_umbralizado)):
+        result = "El dispositivo " + data["id"][i] + (" es seguro" if y_pred_umbralizado[i] == 0 else " es inseguro")
+        print(result)
+
 if __name__ == '__main__':
-    print(linear_prediction("juanpedro", 10, 2))
+    print("A")
+    prediction_file()
 ################this is test code, wont be used.###########################
 ''''
 # procedemos a predecir:

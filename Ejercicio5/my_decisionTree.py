@@ -50,8 +50,8 @@ def result(path):
 
 
 if __name__ == "__main__":
-    result("../json/devices_IA_clases.json")
-    grafica("../json/devices_IA_clases.json")
+    result("devices_IA_clases.json")
+    grafica("devices_IA_clases.json")
 
 
 

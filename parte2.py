@@ -215,7 +215,7 @@ def pdf3_fixed_windows():
 
 @app.route('/ejercicio5', methods=["GET", "POST"])
 def ejercicio5():
-    path="json/devices_IA_clases.json"
+    path= "Ejercicio5/devices_IA_clases.json"
     if request.method == "POST":
         id = request.form['id']
         nServ = request.form['serv']

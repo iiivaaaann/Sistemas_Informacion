@@ -2,8 +2,8 @@ import math
 
 import pandas as pd
 import sqlite3
-from IPython.core.display_functions import display
-from IPython.display import HTML as a
+#from IPython.core.display_functions import display
+#from IPython.display import HTML as a
 import requests
 from matplotlib import pyplot as plt
 #VARIABLES GLOBALES:
@@ -30,14 +30,6 @@ def obtenerTopDispositivos(ntop, conexion):
     plt.savefig("static/images/"+fichero)
     return fichero
 
-def ej3():
-    print("Ejercicio 3")
-    response = requests.get("https://cve.circl.lu/api/last").text
-    df = pd.read_json(response)
-    df = df.iloc[:10]
-    df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
-    display(df)
-    print(df.to_html())
 
 def obtenerTopPeligrosos(ntop, peli, conexion):
      df = pd.read_sql_query("SELECT ID,devices_id, servicios, servicios_ins FROM ANALISIS ORDER BY servicios_ins desc", conexion)

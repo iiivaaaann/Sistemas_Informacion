@@ -1,16 +1,22 @@
+from reportlab.lib import colors, styles
+from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.styles import ParagraphStyle
+
 import json
 import os
-
 import requests
 import pandas as pd
 from flask import Flask, render_template, request, Response
 from reportlab.lib.utils import ImageReader
 import io
+
+from reportlab.platypus import TableStyle, Table, SimpleDocTemplate, Paragraph
+
 import funciones
 import sqlite3
 from flask import make_response
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape, A4
 from reportlab.lib.units import inch
 #from flask_weasyprint import HTML, render_pdf, CSS
 from Ejercicio5 import my_linear as l
@@ -52,15 +58,19 @@ def pdf1():
 
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
+        p.drawCentredString(150, 50, "TITULO")
         if f1:
-                #p.drawString(100, 600, "Top IPs:")
+            p.drawCentredString(100, 600, "Top IPs:")
                 # Add top IPs image
             top_ips_image = ImageReader("static/images/" + f1)
             p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
+
         if f2:
                 # Add top devices image
+            p.drawCentredString(100, 320, "Top Dispositivos:")
             top_devices_image = ImageReader("static/images/" + f2)
             p.drawImage(top_devices_image, x=50, y=50, width=7 * inch, height=3.5 * inch)
+
         p.showPage()
         p.save()
         buffer.seek(0)
@@ -90,7 +100,7 @@ def pdf2():
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         if f1:
-            # p.drawString(100, 600, "Top IPs:")
+            p.drawString(100, 600, "Top IPs:")
             # Add top IPs image
             top_ips_image = ImageReader("static/images/" + f1)
             p.drawImage(top_ips_image, x=200, y=400, width=5 * inch, height=3 * inch)
@@ -110,12 +120,13 @@ def ejercicio3(pdf=False):
     response = requests.get("https://cve.circl.lu/api/last/10").text
     df = pd.read_json(response)
     df = df.iloc[:10]
-    df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
     if not pdf:
+        df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
         return render_template("ejercicio3.html", tables=[df.to_html()])
     elif pdf:
-        return df.to_html()
-"""@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
+        df=df.iloc[:, [0, 1, 3, 6]]
+        return df
+""""@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
 def pdf3():
     css = CSS(string='''
            @page { size: A4 landscape; margin: 0cm }
@@ -134,9 +145,72 @@ def pdf3():
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-    return response """
+    return response
+"""
+@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
+def pdf3_fixed_windows():
+    df = ejercicio3(True)
+    style_normal = ParagraphStyle(
+        name='Normal',
+        fontName='Helvetica',
+        fontSize=12,
+        leading=16,
+        leftIndent=0,
+        rightIndent=0,
+        firstLineIndent=0,
+        alignment=TA_LEFT,
+        spaceBefore=0,
+        spaceAfter=0,
+        bulletFontName='Helvetica',
+        bulletFontSize=12,
+        bulletIndent=0,
+        textColor=colors.black,
+        backColor=None,
+        wordWrap=None,
+        borderWidth=0,
+        borderPadding=0,
+        borderColor=None,
+        borderRadius=None,
+        allowWidows=1,
+        allowOrphans=0,
+        textTransform=None,
+        endDots=None,
+        splitLongWords=1,
+        underlineWidth=0,
+        underlineGap=None,
+        strikeWidth=0,
+        strikeGap=None,
+        superScript=None,
+        subScript=None,
+    )
+    data = [[Paragraph(str(cell), style_normal) for cell in row] for row in [df.columns.tolist()] + df.values.tolist()]
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4))
+    table = Table(data, splitByRow=1)
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 14),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTSIZE', (0, 1), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
 
+    table.setStyle(style)
+    doc.build([table])
 
+    response = make_response(buffer.getvalue())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+
+    buffer.close()
+
+    return response
 
 
 @app.route('/ejercicio5', methods=["GET", "POST"])

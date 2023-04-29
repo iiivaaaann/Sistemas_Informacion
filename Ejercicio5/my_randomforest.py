@@ -16,10 +16,10 @@ def create_and_train_forest(path, arbole=7):
         clf.fit(data, labels)
         return clf
 
-def generate_graph(arbole=7):
-    clf = create_and_train_forest(arbole)
+def generate_graph(path, arbole=7):
+    clf = create_and_train_forest(path, arbole)
+    images = []
     for i in range(len(clf.estimators_)):
-        print(i)
         estimator = clf.estimators_[i]
         export_graphviz(estimator,
                         out_file='randtree.dot',
@@ -27,20 +27,23 @@ def generate_graph(arbole=7):
                         class_names=['0', '1'],
                         rounded=True, proportion=False,
                         precision=2, filled=True)
-        call(['dot', '-Tpng', 'randtree.dot', '-o', '../static/images/foresttree' + str(i) + '.png', '-Gdpi=600'])
+        tmpstr = 'static/images/foresttree' + str(i) + '.png'
+        call(['dot', '-Tpng', 'randtree.dot', '-o', tmpstr, '-Gdpi=600'])
+        images.append('/'+tmpstr)
+    print(f"Generated? {arbole} images")
+    return images
 
-def random_forest_prediction_json(path, arbole=7):
-    dfpred = pd.read_json(path)
-    model = create_and_train_forest(arbole)
+def random_forest_prediction_json(path, predict, arbole=7):
+    dfpred = pd.read_json(predict)
+    model = create_and_train_forest(path, arbole=arbole)
     serv = dfpred.servicios
     servIns = dfpred.servicios_inseguros
-    print(dfpred.servicios)
     df = pd.DataFrame({'servicios': serv, 'servicios_inseguros': servIns})
     pred = model.predict(df)
     return pred
 
 def random_forest_prediction(path, id, serv, servIns, arbole=7):
-    model = create_and_train_forest(path, arbole)
+    model = create_and_train_forest(path, arbole=arbole)
     result = "El dispositivo " + id + (" es seguro" if model.predict([[serv, servIns]]) == 0 else " es inseguro")
     return result
 

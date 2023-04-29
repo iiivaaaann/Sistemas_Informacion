@@ -40,22 +40,10 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="mt-4"> Checkeamos si tu dispositivo es seguro en menos de 1 segundo!!!</h1>
+    <h1 class="mt-4"> Resultados de predecir peligrosidad de dispositivos del JSON.</h1>
     <form action="" method="post">
         <div class="mb-3">
-            <label class="form-label">Dame el nombre de tu dispositivo:</label>
-            <input type="text" name="id" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Cuantos servicios tienes:</label>
-            <input type="number" name="serv" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">¿Cuantos servicios piensas que son inseguros?</label>
-            <input type="number" name="servin" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Selecciona una opción:</label>
+            <label class="form-label">Selecciona un modelo:</label>
             <div class="form-group">
                 <label for="option">Opciones:</label>
                 <select id="option" name="option" class="form-control" required>
@@ -64,22 +52,32 @@
                     <option value="random_forest">Modelo random forest</option>
                 </select>
                 <p>En caso de seleccionar random forest, indica el número de árboles a generar:</p>
-                <input id="trees" type="number" class="form-control" name="trees" value="7" required>
+                <input id="trees"  type="number" class="form-control" name="trees" value="7" required>
                 <p>Este valor se ignorará para otros modelos.</p>
             </div>
         </div>
         <input type="submit" value="Mostrar" class="btn btn-primary">
     </form>
 </div>
-{% if result %}
-    <!-- Show results -->
-    {% if result.endswith("inseguro") %}
-        <div id="result-container" class="text-danger blink">{{result}}</div>
-    {% else %}
-        <div id="result-container" class="text-success blink">{{result}}</div>
-    {% endif %}
-{% endif %}
+{% if lineal or tree or forest %}
+<h3> Predicción de dispositivos peligrosos </h3>
+<p> 1 -> Peligroso, 0 -> No Peligroso</p>
+<p>{{ result }}</p>
 
+<h3> Imágenes del modelo utilizado </h3>
+{% endif %}
+{% if lineal %}
+
+{% endif %}
+{% if tree %}
+
+{% endif %}
+{% if forest %}
+    {% for image in list %}
+    <p>Árbol número {{ loop.index }}:</p>
+    <img src="{{image}}" width="420">
+    {% endfor %}
+{% endif %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

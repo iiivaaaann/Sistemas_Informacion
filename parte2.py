@@ -227,10 +227,29 @@ def ejercicio5():
         elif op == 'decision_tree':
             return render_template("ejercicio5.html", result=tree.decision_tree_prediction(path, id, nServ, nServIns))
         elif op == 'random_forest':
-            return render_template("ejercicio5.html", result=forest.random_forest_prediction(path, id, nServ, nServIns))
+            trees = int(request.form['trees'])
+            return render_template("ejercicio5.html", result=forest.random_forest_prediction(path, id, nServ, nServIns, arbole=trees))
     elif request.method == "GET":
         return render_template("ejercicio5.html")
-    tree.result()
+    tree.result(path)
+
+@app.route('/ejercicio5json', methods=["GET", "POST"])
+def ejercicio5json():
+    path = "Ejercicio5/devices_IA_clases.json"
+    predict = "Ejercicio5/devices_IA_predecir.json"
+    if request.method == "POST":
+        op=request.form['option']
+        if op == 'regresion_lineal':
+            return render_template("ejercicio5json.html", result=l.prediction_file(), lineal=True)
+        elif op == 'decision_tree':
+            return render_template("ejercicio5json.html", result=tree.predict(path), tree=True)
+        elif op == 'random_forest':
+            trees = int(request.form['trees'])
+            images = forest.generate_graph(path, arbole=trees)
+            print(images)
+            return render_template("ejercicio5json.html", result=forest.random_forest_prediction_json(path, predict, arbole=trees), forest=True, list=images)
+    elif request.method == "GET":
+        return render_template("ejercicio5json.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

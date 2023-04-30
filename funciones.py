@@ -16,6 +16,7 @@ def obtenerTopIps(ntop, conexion):
     y_values=muestra['num']
     plt.figure(num=None, figsize=(14, 6), dpi=80, facecolor='w', edgecolor='k')
     plt.bar(x_values,y_values)
+    plt.title("TOP "+str(ntop)+" IPS MÁS PELIGROSAS")
     fichero="Top"+str(ntop)+"_ipsVuln"+".png"
     plt.savefig("static/images/"+fichero)
     return fichero
@@ -26,6 +27,7 @@ def obtenerTopDispositivos(ntop, conexion):
     x_values = muestra["devices_id"]
     y_values = muestra["suma"]
     plt.bar(x_values, y_values)
+    plt.title("TOP "+str(ntop)+" DISPOSITIVOS MÁS VULNERABLES")
     fichero="Top"+str(ntop)+"_vulnDev"+".png"
     plt.savefig("static/images/"+fichero)
     return fichero

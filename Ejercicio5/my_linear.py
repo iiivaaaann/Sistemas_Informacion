@@ -4,6 +4,7 @@ import numpy as np
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 def create_and_train_Linear(path):
@@ -55,10 +56,63 @@ def prediction_file():
     for i in range(len(y_pred_umbralizado)):
         result = "El dispositivo " + data["id"][i] + (" es seguro" if y_pred_umbralizado[i] == 0 else " es inseguro")
         print(result)
+    print(pred)
+    createGraph(X_train, y_train, X_data,  pred)
+def createGraph(X_train, y_train,  X_data, Y_pred):
+    return
+
+def pru():
+    ## cargar datos de entrenamiento
+    train_data= pd.read_json("devices_IA_clases.json")
+    #print(train_data)
+    X_train_multiple= train_data.loc[:, ["servicios", "servicios_inseguros"]]
+    y_mul= train_data["peligroso"]
+    X_train, X_test, y_train, y_test= train_test_split(X_train_multiple, y_mul, test_size=0.2)
+    ## Entrenar el modelo:
+    model= linear_model.LinearRegression()
+    model.fit(X_train, y_train)
+    y_pred=model.predict(X_test)
+    print(model.coef_)
+    print(y_pred)
+    ##
+    print(len(X_test))
+    print(len(y_test))
+    print(X_test)
+    print(y_test)
+    plt.scatter(X_test["servicios"], y_test, color="blue")
+    plt.xlabel("servicios")
+    plt.scatter(X_test["servicios_inseguros"], y_test, color="red")
+    plt.plot(X_test["servicios"], y_pred)
+    plt.legend()
+    plt.show()
+    ## predecir datos
+    predit_data= pd.read_json("devices_IA_predecir_v2.json")
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     print("A")
-    prediction_file()
+    pru()
+
+
+
+
+
+
+
+
+
+
 ################this is test code, wont be used.###########################
 ''''
 # procedemos a predecir:

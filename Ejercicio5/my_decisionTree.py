@@ -17,7 +17,7 @@ def train(path):
 
 def predict(path):
     clf=train(path)
-    dfcheck = pd.read_json("../json/devices_IA_predecir.json")
+    dfcheck = pd.read_json("./devices_IA_predecir_v2.json")
     arr1 = dfcheck.servicios
     arr2 = dfcheck.servicios_inseguros
     data = pd.DataFrame({'servicios': arr1, 'servicios_inseguros': arr2})

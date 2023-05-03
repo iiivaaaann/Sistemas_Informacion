@@ -23,7 +23,7 @@ from Ejercicio5 import my_linear_v2 as l
 from Ejercicio5 import my_decisionTree as tree
 from Ejercicio5 import my_randomforest as forest
 
-conexion= sqlite3.connect('pr1_SI.db', check_same_thread=False)
+conexion= sqlite3.connect('Practica1/pr1_SI.db', check_same_thread=False)
 cur=conexion.cursor()
 
 app = Flask(__name__, template_folder="templates")
@@ -121,7 +121,7 @@ def ejercicio3(pdf=False):
     df = pd.read_json(response)
     df = df.iloc[:10]
     if not pdf:
-        df = df.iloc[:, [0, 1, 3, 6, 7, 9, 10]]
+        df = df.iloc[:, [0,1, 3,6, 10]]
         return render_template("ejercicio3.html", tables=[df.to_html()])
     elif pdf:
         df=df.iloc[:, [0, 1, 3, 6]]

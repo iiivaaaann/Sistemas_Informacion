@@ -19,7 +19,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, landscape, A4
 from reportlab.lib.units import inch
 #from flask_weasyprint import HTML, render_pdf, CSS
-from Ejercicio5 import my_linear as l
+from Ejercicio5 import my_linear_v2 as l
 from Ejercicio5 import my_decisionTree as tree
 from Ejercicio5 import my_randomforest as forest
 
@@ -126,27 +126,7 @@ def ejercicio3(pdf=False):
     elif pdf:
         df=df.iloc[:, [0, 1, 3, 6]]
         return df
-""""@app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
-def pdf3():
-    css = CSS(string='''
-           @page { size: A4 landscape; margin: 0cm }
-           table.dataframe { border-collapse: collapse; }
-           table.dataframe th, table.dataframe td {
-               border: 1px solid black;
-               padding: 5px;
-               text-align: center;
-           }
-           .chart-container { border: 1px solid #ccc; padding: 10px; }
-           .chart-title { font-size: 20px; font-weight: bold; text-align: center; }
-           .chart-axis-label { font-size: 14px; font-weight: bold; }
-           .chart-axis-tick { font-size: 12px; }
-       ''')
-    pdf=HTML(string=ejercicio3(True)).write_pdf(stylesheets=[css])
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-    return response
-"""
+
 @app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
 def pdf3_fixed_windows():
     df = ejercicio3(True)
@@ -216,6 +196,8 @@ def pdf3_fixed_windows():
 @app.route('/ejercicio5', methods=["GET", "POST"])
 def ejercicio5():
     path= "Ejercicio5/devices_IA_clases.json"
+    path2= "Ejercicio5/devices_IA_predecir_v2.json"
+
     if request.method == "POST":
         id = request.form['id']
         nServ = request.form['serv']
@@ -223,7 +205,7 @@ def ejercicio5():
         op=request.form['option']
         #print((id, nServ, nServIns, op))
         if op == 'regresion_lineal':
-            return render_template("ejercicio5.html", result=l.linear_prediction(path,id, nServ, nServIns))
+            return render_template("ejercicio5.html", result=l.linear_prediction(path, path2,id, nServ, nServIns))
         elif op == 'decision_tree':
             return render_template("ejercicio5.html", result=tree.decision_tree_prediction(path, id, nServ, nServIns))
         elif op == 'random_forest':

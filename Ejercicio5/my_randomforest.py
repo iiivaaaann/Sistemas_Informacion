@@ -48,5 +48,5 @@ def random_forest_prediction(path, id, serv, servIns, arbole=7):
     return result
 
 if __name__ == "__main__":
-    print(random_forest_prediction("../json/devices_IA_predecir.json", "misterjagger", 8, 1))
+    print(random_forest_prediction("devices_IA_predecir.json", "misterjagger", 8, 1))
     generate_graph(3)

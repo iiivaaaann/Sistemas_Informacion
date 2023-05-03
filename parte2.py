@@ -218,11 +218,11 @@ def ejercicio5():
 @app.route('/ejercicio5json', methods=["GET", "POST"])
 def ejercicio5json():
     path = "Ejercicio5/devices_IA_clases.json"
-    predict = "Ejercicio5/devices_IA_predecir.json"
+    predict = "Ejercicio5/devices_IA_predecir_v2.json"
     if request.method == "POST":
         op=request.form['option']
         if op == 'regresion_lineal':
-            return render_template("ejercicio5json.html", result=l.prediction_file(), lineal=True)
+            return render_template("ejercicio5json.html", lineal=True, image=l.createGraph())
         elif op == 'decision_tree':
             return render_template("ejercicio5json.html", result=tree.predict(path), tree=True)
         elif op == 'random_forest':

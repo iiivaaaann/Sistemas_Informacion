@@ -5,7 +5,8 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
-
+path = "devices_IA_clases.json"
+predict = "devices_IA_predecir_v2.json"
 def createTrainedModel(path, path2):
     train_File= pd.read_json(path)
     test_file= pd.read_json(path2)
@@ -18,13 +19,16 @@ def createTrainedModel(path, path2):
     model.fit(X_train, y_train)
     return model, X_test, y_test
 
-def createGraph(model, X_test, y_test):
+def createGraph():
+    model, X_test, y_test= createTrainedModel("devices_IA_clases.json", "devices_IA_predecir_v2.json")
     y_pred= model.predict(X_test)
     plt.scatter(X_test,y_test,color="black")
     plt.plot(X_test, y_pred, color="red", linewidth=3)
     plt.xticks(())
     plt.yticks(())
-    plt.show()
+    fichero="regr_graph"
+    plt.savefig("../static/images/"+fichero)
+    return "static/images/"+fichero
 
 def predict(id, nserv, servIns, model):
     n_json = [{
@@ -49,5 +53,5 @@ def linear_prediction(path, path2, id, nserv, servIns):
 
 
 if __name__ == '__main__':
-    model, X_test, y_test = createTrainedModel()
-    createGraph(model, X_test, y_test)
+   ## model, X_test, y_test = createTrainedModel()
+    createGraph()

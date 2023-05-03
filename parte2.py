@@ -215,7 +215,8 @@ def ejercicio5():
         return render_template("ejercicio5.html")
     tree.result(path)
 
-@app.route('/ejercicio5json', methods=["GET", "POST"])
+
+@app.route('/ejercicio5json', methods=["GET", "POST"]) ### yamuestra el linear graph
 def ejercicio5json():
     path = "Ejercicio5/devices_IA_clases.json"
     predict = "Ejercicio5/devices_IA_predecir_v2.json"

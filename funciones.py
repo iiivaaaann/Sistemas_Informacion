@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 import pandas as pd
 import sqlite3
 #from IPython.core.display_functions import display
@@ -70,9 +70,16 @@ def obtenerTopPeligrosos(ntop, peli, conexion):
      return fichero
 
 
+def cmpArr(arr1, arr2):
+    dif=0
+    for x, y in zip(arr1, arr2):
+        if x!=y:
+            dif+=1
+    return str(dif/len(arr1)*100)+"%"
 
 
 if __name__ == "__main__":
      #checkeando el valor de __name__ prevenimos que se ejecute ej3() al ejecutar el archivo parte2.py
     print("funciones_file")
+    print(cmpArr([1,1],[2,1]))
 

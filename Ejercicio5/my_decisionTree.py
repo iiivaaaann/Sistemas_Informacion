@@ -42,7 +42,7 @@ def grafica(path):
                          special_characters=True, feature_names=cols, class_names=['0', '1'])
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
     graph.write_png('static/images/decision_tree.png')
-    return "static/images/decision_tree.png"
+    return "/static/images/decision_tree.png"
 
 def result(path,predict):
     arr=predict(path,predict)

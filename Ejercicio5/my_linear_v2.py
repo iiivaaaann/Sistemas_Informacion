@@ -29,7 +29,7 @@ def createGraph(path, predict):
     plt.savefig("static/images/"+fichero)
     dec_umbral = 0.5
     y_pred_umbralizado = [1 if y >= dec_umbral else 0 for y in y_pred]
-    return "static/images/"+fichero+".png", y_pred_umbralizado
+    return "/static/images/"+fichero+".png", y_pred_umbralizado
 
 def predict(id, nserv, servIns, model):
     n_json = [{

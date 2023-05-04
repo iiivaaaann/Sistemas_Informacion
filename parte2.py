@@ -224,7 +224,8 @@ def ejercicio5json():
         op=request.form['option']
         if op == 'regresion_lineal':
             print(l.createGraph(path, predict))
-            return render_template("ejercicio5json.html", lineal=True, image=l.createGraph(path, predict)+".png")
+            im, arr =l.createGraph(path, predict)
+            return render_template("ejercicio5json.html", lineal=True, image=im, result=arr)
         elif op == 'decision_tree':
             return render_template("ejercicio5json.html", result=tree.predict(path), tree=True)
         elif op == 'random_forest':

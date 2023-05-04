@@ -27,7 +27,9 @@ def createGraph(path, predict):
     plt.yticks(())
     fichero="regr_graph"
     plt.savefig("static/images/"+fichero)
-    return "static/images/"+fichero
+    dec_umbral = 0.5
+    y_pred_umbralizado = [1 if y >= dec_umbral else 0 for y in y_pred]
+    return "static/images/"+fichero+".png", y_pred_umbralizado
 
 def predict(id, nserv, servIns, model):
     n_json = [{
@@ -51,6 +53,3 @@ def linear_prediction(path, path2, id, nserv, servIns):
     return result
 
 
-if __name__ == '__main__':
-   ## model, X_test, y_test = createTrainedModel()
-    createGraph()

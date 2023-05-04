@@ -75,7 +75,7 @@ def cmpArr(arr1, arr2):
     for x, y in zip(arr1, arr2):
         if x!=y:
             dif+=1
-    return str(dif/len(arr1)*100)+"%"
+    return str((len(arr1)-dif)/len(arr1)*100)+"%"
 
 
 if __name__ == "__main__":

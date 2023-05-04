@@ -40,9 +40,9 @@ def grafica(path):
                          filled=True, rounded=True,
                          special_characters=True, feature_names=cols, class_names=['0', '1'])
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-    graph.write_png('../static/images/desicion_tree.png')
-    return "static/images/desicion_tree.png"
-    Image(graph.create_png())
+    graph.write_png('static/images/decision_tree.png')
+    return "static/images/decision_tree.png"
+
 def result(path):
     arr=predict(path)
     counts = Counter(arr)

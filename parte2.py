@@ -128,7 +128,7 @@ def ejercicio3(pdf=False):
         return df
 
 @app.route('/ejercicio3/pdf', methods=['GET', 'POST'])
-def pdf3_fixed_windows():
+def pdf3():
     df = ejercicio3(True)
     style_normal = ParagraphStyle(
         name='Normal',
@@ -216,7 +216,7 @@ def ejercicio5():
     tree.result(path)
 
 
-@app.route('/ejercicio5json', methods=["GET", "POST"]) ### yamuestra el linear graph
+@app.route('/ejercicio5/testmodels', methods=["GET", "POST"]) ### yamuestra el linear graph
 def ejercicio5json():
     path = "Ejercicio5/devices_IA_clases.json"
     predict = "Ejercicio5/devices_IA_predecir_v2.json"

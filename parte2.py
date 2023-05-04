@@ -227,7 +227,7 @@ def ejercicio5json():
             im, arr =l.createGraph(path, predict)
             return render_template("ejercicio5json.html", lineal=True, image=im, result=arr)
         elif op == 'decision_tree':
-            return render_template("ejercicio5json.html", result=tree.predict(path), tree=True, image=tree.grafica(path))
+            return render_template("ejercicio5json.html", result=tree.predict(path,predict), tree=True, image=tree.grafica(path))
         elif op == 'random_forest':
             trees = int(request.form['trees'])
             images = forest.generate_graph(path, arbole=trees)

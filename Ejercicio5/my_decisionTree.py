@@ -4,7 +4,7 @@ import pandas as pd
 import pydotplus
 from IPython.display import Image
 from collections import Counter
-
+from funciones import cmpArr
 def train(path):
     #df=pd.read_json("../json/devices_IA_clases.json")
     df = pd.read_json(path)
@@ -15,11 +15,12 @@ def train(path):
     return clf
 
 
-def predict(path):
+def predict(path,predict):
     clf=train(path)
-    dfcheck = pd.read_json(path)
+    dfcheck = pd.read_json(predict)
     arr1 = dfcheck.servicios
     arr2 = dfcheck.servicios_inseguros
+    arr3 = dfcheck.peligroso
     data = pd.DataFrame({'servicios': arr1, 'servicios_inseguros': arr2})
     return clf.predict(data)
 
@@ -43,16 +44,16 @@ def grafica(path):
     graph.write_png('static/images/decision_tree.png')
     return "static/images/decision_tree.png"
 
-def result(path):
-    arr=predict(path)
+def result(path,predict):
+    arr=predict(path,predict)
     counts = Counter(arr)
     print(f"Número de dispositivos seguros: {counts[0]}")
     print(f"Number de dispositivos peligrosos: {counts[1]}")
 
 
 if __name__ == "__main__":
-    result("devices_IA_clases.json")
-    grafica("devices_IA_clases.json")
+    print(predict("devices_IA_clases.json","devices_IA_predecir_v2.json"))
+
 
 
 

@@ -17,7 +17,7 @@ def train(path):
 
 def predict(path):
     clf=train(path)
-    dfcheck = pd.read_json("./devices_IA_predecir_v2.json")
+    dfcheck = pd.read_json(path)
     arr1 = dfcheck.servicios
     arr2 = dfcheck.servicios_inseguros
     data = pd.DataFrame({'servicios': arr1, 'servicios_inseguros': arr2})
@@ -40,7 +40,8 @@ def grafica(path):
                          filled=True, rounded=True,
                          special_characters=True, feature_names=cols, class_names=['0', '1'])
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-    graph.write_png('desicion_tree.png')
+    graph.write_png('../static/images/desicion_tree.png')
+    return "static/images/desicion_tree.png"
     Image(graph.create_png())
 def result(path):
     arr=predict(path)

@@ -30,7 +30,6 @@ def generate_graph(path, arbole=7):
         tmpstr = 'static/images/foresttree' + str(i) + '.png'
         call(['dot', '-Tpng', 'randtree.dot', '-o', tmpstr, '-Gdpi=600'])
         images.append('/'+tmpstr)
-    print(f"Generated? {arbole} images")
     return images
 
 def random_forest_prediction_json(path, predict, arbole=7):

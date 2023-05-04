@@ -220,19 +220,22 @@ def ejercicio5():
 def ejercicio5json():
     path = "Ejercicio5/devices_IA_clases.json"
     predict = "Ejercicio5/devices_IA_predecir_v2.json"
+    df = pd.read_json(predict)
+    resarr = df['peligroso'].to_numpy()
+    print(resarr)
     if request.method == "POST":
         op=request.form['option']
         if op == 'regresion_lineal':
-            print(l.createGraph(path, predict))
             im, arr =l.createGraph(path, predict)
-            return render_template("ejercicio5json.html", lineal=True, image=im, result=arr)
+            return render_template("ejercicio5json.html", lineal=True, image=im, result=arr, percent=funciones.cmpArr(arr, resarr))
         elif op == 'decision_tree':
-            return render_template("ejercicio5json.html", result=tree.predict(path,predict), tree=True, image=tree.grafica(path))
+            result = tree.predict(path,predict)
+            return render_template("ejercicio5json.html", result=result, percent=funciones.cmpArr(result, resarr), tree=True, image=tree.grafica(path))
         elif op == 'random_forest':
             trees = int(request.form['trees'])
             images = forest.generate_graph(path, arbole=trees)
-            print(images)
-            return render_template("ejercicio5json.html", result=forest.random_forest_prediction_json(path, predict, arbole=trees), forest=True, list=images)
+            result = forest.random_forest_prediction_json(path, predict, arbole=trees)
+            return render_template("ejercicio5json.html", result=result, percent=funciones.cmpArr(result, resarr), forest=True, list=images)
     elif request.method == "GET":
         return render_template("ejercicio5json.html")
 
